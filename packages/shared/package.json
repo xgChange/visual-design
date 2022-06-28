@@ -1,0 +1,11 @@
+{
+  "name": "@visual/shared",
+  "version": "1.0.0",
+  "description": "共享包、工具包",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC"
+}
