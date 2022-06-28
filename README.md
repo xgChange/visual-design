@@ -15,3 +15,4 @@
 
 - husky
 - commitlint、cz
+- changesets
