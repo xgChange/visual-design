@@ -5,9 +5,9 @@
     "sourceMap": true,
     "strict": true,
     "rootDir": ".",
+    "composite": true,
     "paths": {
-      "@vd/*": ["packages/*/src"],
-      "@shared/*": ["packages/shared/src/*"]
+      "@visual/*": ["packages/*/src"]
     }
   },
   "extends": "./tsconfig.common.json",
