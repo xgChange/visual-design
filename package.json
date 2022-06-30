@@ -11,8 +11,7 @@
     "preinstall": "npx only-allow pnpm",
     "ca": "changeset add",
     "cv": "changeset version",
-    "cr": "changeset publish",
-    "lint": "pnpm lint-staged"
+    "cr": "changeset publish"
   },
   "keywords": [],
   "author": "",
