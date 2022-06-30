@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "outDir": "lib",
+    "sourceMap": true,
+    "strict": true,
+    "rootDir": ".",
+    "paths": {
+      "@vd/*": ["packages/*/src"],
+      "@shared/*": ["packages/shared/src/*"]
+    }
+  },
+  "extends": "./tsconfig.common.json",
+  "exclude": ["node_modules"],
+  "include": ["packages/*/src", "app/*/src"]
+}
