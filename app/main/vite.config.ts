@@ -3,7 +3,6 @@ import vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import eslintPlugin from 'vite-plugin-eslint'
 import { resolve } from 'path'
-// import { name, version } from './package.json'
 
 const pathResolve = (path: string) => resolve(__dirname, path)
 
