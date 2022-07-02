@@ -5,32 +5,28 @@ import {
   ContentBase,
   SiderRightBase
 } from '@/components'
-import { NLayout, NLayoutContent, NLayoutHeader, NLayoutSider } from 'naive-ui'
+import { NLayout, NLayoutContent, NLayoutSider } from 'naive-ui'
+
+import styles from './css/Layout.module.scss'
+
+console.log(styles)
 
 export default defineComponent({
   name: 'BaseLayout',
   setup() {
     return () => (
-      <div>
-        <NLayout hasSider>
-          <NLayoutSider bordered>
-            <SiderbarBase />
-          </NLayoutSider>
-          <NLayoutContent>
-            <NLayoutHeader>
-              <HeaderBase />
-            </NLayoutHeader>
-            <NLayout>
-              <NLayoutContent>
-                <ContentBase />
-              </NLayoutContent>
-            </NLayout>
-          </NLayoutContent>
-          <NLayoutSider>
-            <SiderRightBase />
-          </NLayoutSider>
-        </NLayout>
-      </div>
+      <NLayout hasSider class={styles.layoutContainer}>
+        <NLayoutSider bordered class={styles.left}>
+          <SiderbarBase />
+        </NLayoutSider>
+        <NLayoutContent class={styles.middle}>
+          <HeaderBase class={styles.mlHeader} />
+          <ContentBase class={styles.mlContent} />
+        </NLayoutContent>
+        <NLayoutSider class={styles.right}>
+          <SiderRightBase />
+        </NLayoutSider>
+      </NLayout>
     )
   }
 })

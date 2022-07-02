@@ -18,3 +18,18 @@
 - husky
 - commitlint、cz
 - changesets
+
+### 一些说明
+
+- 项目使用了 css module 写法，想让 vscode 做到智能提示，需要安装**css Modules** vscode 插件
+
+```javascript
+"cssModules.camelCase": true
+
+// 并且vite的css modules配置 设置为
+css: {
+  modules: {
+    localsConvention: 'camelCaseOnly' // 驼峰和横线，文件名引入
+  }
+}
+```

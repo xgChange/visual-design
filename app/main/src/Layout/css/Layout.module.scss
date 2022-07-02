@@ -1,0 +1,29 @@
+.layout-container {
+  width: 100%;
+  min-height: 100vh;
+
+  .left {
+    min-width: 242px;
+    width: 242px;
+    height: 100vh;
+  }
+
+  .middle {
+    height: 100vh;
+    min-width: 500px;
+
+    .ml-header {
+      height: 100px;
+    }
+
+    .ml-content {
+      height: calc(100% - 100px);
+    }
+  }
+
+  .right {
+    min-width: 272px;
+    width: 272px;
+    border-left: 1px solid #ccc;
+  }
+}
