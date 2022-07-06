@@ -13,7 +13,7 @@
     "esModuleInterop": true,
     "lib": ["esnext", "dom"],
     "skipLibCheck": true,
-    "types": ["vite/client", "naive-ui/volar"],
+    "types": ["vite/client", "naive-ui/volar", "unplugin-vue-define-options"],
     "paths": {
       "@/*": ["src/*"]
     }

@@ -3,8 +3,8 @@
   min-height: 100vh;
 
   .left {
-    min-width: 242px;
-    width: 242px;
+    min-width: 300px;
+    width: 300px !important;
     height: 100vh;
   }
 
@@ -22,8 +22,8 @@
   }
 
   .right {
-    min-width: 272px;
-    width: 272px;
+    min-width: 300px;
+    width: 300px !important;
     border-left: 1px solid #ccc;
   }
 }

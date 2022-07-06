@@ -1,8 +1,10 @@
 {
   "env": {
     "browser": true,
-    "es2021": true
+    "es2021": true,
+    "vue/setup-compiler-macros": true
   },
+  "globals": { "defineOptions": "writable" },
   "extends": [
     "eslint:recommended",
     "plugin:vue/vue3-recommended",

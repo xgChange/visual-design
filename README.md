@@ -33,3 +33,35 @@ css: {
   }
 }
 ```
+
+- 解决 setup 组件无法设置 name 的问题
+
+```bash
+pnpm add unplugin-vue-define-options -D
+```
+
+### json 定义，暂时定义成这样
+
+```typescript
+interface PageConfig {
+  style: {}
+}
+
+interface Component {
+  name: string
+  id: string
+  style: Object
+  slot: Component
+}
+
+interface CurPageInfo {
+  components: Component[]
+  path: string
+  title: string
+}
+
+interface PageInfo {
+  pageConfig: PageConfig
+  page: Record<string, CurPageInfo>
+}
+```

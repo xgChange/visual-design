@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
+import DefineOptions from 'unplugin-vue-define-options/vite'
 import Components from 'unplugin-vue-components/vite'
 import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import eslintPlugin from 'vite-plugin-eslint'
@@ -13,6 +14,7 @@ export default defineConfig({
   plugins: [
     vue(),
     VueJsx(),
+    DefineOptions(),
     eslintPlugin(),
     Components({
       resolvers: [NaiveUiResolver()]
@@ -22,12 +24,6 @@ export default defineConfig({
     modules: {
       localsConvention: 'camelCaseOnly' // 驼峰和横线，文件名引入
     }
-    // 增加css 预处理的配置
-    // preprocessorOptions: {
-    //   scss: {
-    //     additionalData: '@import "@/assets/css/variable.scss";',
-    //   },
-    // },
   },
   resolve: {
     alias: [

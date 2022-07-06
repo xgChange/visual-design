@@ -5,6 +5,7 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    LogoWrapper: typeof import('./src/components/Base/LogoWrapper.vue')['default']
     NLayout: typeof import('naive-ui')['NLayout']
   }
 }
