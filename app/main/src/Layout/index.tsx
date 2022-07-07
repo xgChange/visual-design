@@ -9,8 +9,6 @@ import { NLayout, NLayoutContent, NLayoutSider } from 'naive-ui'
 
 import styles from './css/Layout.module.scss'
 
-console.log(styles)
-
 export default defineComponent({
   name: 'BaseLayout',
   setup() {

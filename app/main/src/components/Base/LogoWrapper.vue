@@ -13,16 +13,20 @@ withDefaults(defineProps<LogoProp>(), {
 </script>
 
 <template>
-  <div class="logo-wrapper">
+  <div :class="['logo-wrapper', { 'no-slogan': !slogan }]">
     <div class="logo"></div>
-    <div class="slogan">{{ slogan }}</div>
+    <div v-show="slogan" class="slogan">{{ slogan }}</div>
   </div>
 </template>
 
 <style lang="scss" scoped>
 .logo-wrapper {
   display: flex;
-  padding: 10px;
+  padding: 10px 10px 0 10px;
+
+  &.no-slogan {
+    justify-content: center;
+  }
   .logo {
     background-image: url(@/assets/logo.png);
     background-repeat: no-repeat;
