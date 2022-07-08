@@ -5,7 +5,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "pnpm -C app/main dev",
+    "tsc:packages": "tsc --project packages/shared/tsconfig.json",
+    "dev": "pnpm run tsc:packages && pnpm -C app/main dev",
     "build": "pnpm -C app/main build",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
@@ -29,7 +30,8 @@
     "husky": "^8.0.1",
     "lint-staged": "^13.0.3",
     "prettier": "^2.7.1",
-    "typescript": "^4.5.4"
+    "typescript": "^4.5.4",
+    "vite": "^2.9.9"
   },
   "lint-staged": {
     "*.{js,vue,ts,jsx,tsx}": [

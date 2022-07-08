@@ -1,4 +1,5 @@
 packages:
-  - 'app/**'
-  - 'packages/**'
+  - 'app/**' # 放 前后端 项目
+  - 'packages/**' # 公共包
+  - 'example/**' # 例子
   - '!**/test/**'

@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "sourceMap": true,
+    "strict": true,
+    "rootDir": ".",
+    "composite": true,
+    "declaration": true,
+    "declarationDir": "./types",
+    "emitDeclarationOnly": true
+  },
+  "extends": "../../tsconfig.common.json",
+  "exclude": ["node_modules"],
+  "include": ["src/**/*.ts", "src/**/*.d.ts"]
+}

@@ -1,3 +1,8 @@
 const msg = '我是index.ts'
 
-export { msg }
+const lab = '我是lab'
+
+export default {
+  msg,
+  lab
+}
