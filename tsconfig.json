@@ -6,11 +6,12 @@
     "strict": true,
     "rootDir": ".",
     "composite": true,
+    "types": ["vite/client"],
     "paths": {
       "@visual/*": ["packages/*/src"]
     }
   },
+  "extends": "./tsconfig.common.json",
   "exclude": ["node_modules"],
-  "include": ["packages/*/src", "app/*/src"],
-  "references": [{ "path": "./tsconfig.common.json" }]
+  "include": ["example/src/*", "packages/*/src"]
 }

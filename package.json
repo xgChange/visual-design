@@ -6,6 +6,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "pnpm -C app/main dev",
+    "example": "pnpm -C example dev",
     "build": "pnpm -C app/main build",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
