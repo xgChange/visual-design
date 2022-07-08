@@ -5,8 +5,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "tsc:packages": "tsc --project packages/shared/tsconfig.json",
-    "dev": "pnpm run tsc:packages && pnpm -C app/main dev",
+    "dev": "pnpm -C app/main dev",
     "build": "pnpm -C app/main build",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",

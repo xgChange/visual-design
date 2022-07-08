@@ -15,7 +15,8 @@
     "skipLibCheck": true,
     "types": ["vite/client", "naive-ui/volar", "unplugin-vue-define-options"],
     "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@visual/*": ["../../packages/*/src"]
     }
   },
   "include": [

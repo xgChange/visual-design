@@ -1,11 +1,12 @@
 {
-  "name": "@visual/shared",
-  "version": "1.0.1",
-  "description": "共享包、工具包",
+  "name": "@visual/components",
+  "version": "1.0.0",
+  "description": "",
   "main": "index.js",
   "scripts": {
     "tsc": "tsc"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC"
 }

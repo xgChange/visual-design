@@ -10,7 +10,7 @@
       "@visual/*": ["packages/*/src"]
     }
   },
-  "extends": "./tsconfig.common.json",
   "exclude": ["node_modules"],
-  "include": ["packages/*/src", "app/*/src"]
+  "include": ["packages/*/src", "app/*/src"],
+  "references": [{ "path": "./tsconfig.common.json" }]
 }

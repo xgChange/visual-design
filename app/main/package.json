@@ -9,7 +9,8 @@
     "lint": "eslint . --ext .vue,.ts,.tsx,.jsx --fix"
   },
   "dependencies": {
-    "@visual/shared": "workspace:^1.0.1",
+    "@visual/components": "workspace:*",
+    "@visual/shared": "workspace:*",
     "naive-ui": "^2.30.8",
     "normalize.css": "^8.0.1",
     "vfonts": "^0.0.3",
@@ -31,6 +32,7 @@
     "unplugin-vue-define-options": "^0.6.1",
     "vite": "^2.9.9",
     "vite-plugin-eslint": "^1.6.1",
+    "vue-eslint-parser": "^9.0.3",
     "vue-tsc": "^0.34.7"
   }
 }
