@@ -1,0 +1,3 @@
+export enum COMPONENT_GROUP_TYPE {
+  BASIC = 'BASIC'
+}

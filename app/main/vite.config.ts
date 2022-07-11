@@ -1,4 +1,4 @@
-import { defineConfig } from 'vite'
+import { defineConfig, PluginOption } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import VueJsx from '@vitejs/plugin-vue-jsx'
 import DefineOptions from 'unplugin-vue-define-options/vite'
@@ -19,7 +19,7 @@ export default defineConfig({
     Components({
       resolvers: [NaiveUiResolver()]
     })
-  ],
+  ] as PluginOption[],
   css: {
     modules: {
       localsConvention: 'camelCaseOnly' // 驼峰和横线，文件名引入

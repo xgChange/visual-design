@@ -5,8 +5,11 @@ import '@vue/runtime-core'
 
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
+    AG: typeof import('./src/components/Base/AG.vue')['default']
     LogoWrapper: typeof import('./src/components/Base/LogoWrapper.vue')['default']
     NLayout: typeof import('naive-ui')['NLayout']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
   }
 }
 

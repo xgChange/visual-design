@@ -1,5 +1,6 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
 import { defineComponent } from 'vue'
+import { VButton } from '@visual/components'
 
 import styles from './csss/MaterialPanel.module.scss'
 
@@ -22,7 +23,7 @@ export default defineComponent({
           name="baseComponent"
           v-slots={{ header: InsertHeader('基础组件') }}
         >
-          测试
+          <VButton.preview />
         </NCollapseItem>
         <NCollapseItem
           class={styles.item}

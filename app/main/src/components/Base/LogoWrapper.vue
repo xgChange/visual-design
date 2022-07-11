@@ -7,13 +7,15 @@ interface LogoProp {
   slogan?: string
 }
 
-withDefaults(defineProps<LogoProp>(), {
+const props = withDefaults(defineProps<LogoProp>(), {
   slogan: ''
 })
+
+const logoWrapperClass = ['logo-wrapper', { 'no-slogan': !props.slogan }]
 </script>
 
 <template>
-  <div :class="['logo-wrapper', { 'no-slogan': !slogan }]">
+  <div :class="logoWrapperClass">
     <div class="logo"></div>
     <div v-show="slogan" class="slogan">{{ slogan }}</div>
   </div>

@@ -15,7 +15,6 @@ function createRoutes(components: any[]) {
 }
 
 const routes = createRoutes(componentList)
-console.log(routes)
 
 const router = createRouter({
   history: createWebHistory(),

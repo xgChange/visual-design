@@ -1,0 +1,1 @@
+export { useVComponent } from './useVComponent'

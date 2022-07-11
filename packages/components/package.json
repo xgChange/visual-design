@@ -11,6 +11,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "vant": "^3.5.2",
     "vue": "^3.2.25"
   }
 }
