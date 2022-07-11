@@ -1,5 +1,10 @@
+import create from './create'
+import * as components from './components'
+
 export * from './components'
 
-export { default as create } from './create'
+export const componentsAll = Object.keys(components).map(
+  key => components[key as keyof typeof components]
+)
 
-export default 'hello 我是组件库'
+export default create(componentsAll)

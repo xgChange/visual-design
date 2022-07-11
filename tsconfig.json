@@ -13,5 +13,5 @@
   },
   "extends": "./tsconfig.common.json",
   "exclude": ["node_modules"],
-  "include": ["example/src/*", "packages/*/src"]
+  "include": ["example/src", "packages/*/src"]
 }

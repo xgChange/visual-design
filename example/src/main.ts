@@ -1,7 +1,9 @@
 import { createApp } from 'vue'
 import App from './App.vue'
-import { VButton } from '@visual/components'
+import router from './router'
 
-createApp(App).mount('#app')
+const app = createApp(App)
 
-console.log('hello', VButton)
+app.use(router)
+
+app.mount('#app')
