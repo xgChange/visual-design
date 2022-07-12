@@ -7,6 +7,31 @@
     }
     .component {
       display: flex;
+      flex-direction: row;
+      .component-item {
+        cursor: pointer;
+        width: 128px;
+        height: 65px;
+        margin-left: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        border: 1px solid #e1e4eb;
+        padding: 5px 0 0 0;
+        &:first-child {
+          margin-left: 0;
+        }
+        .content {
+          width: 54px;
+          height: 34px;
+        }
+        .text-tips {
+          height: 16px;
+          font-size: 12px;
+          margin-top: 3px;
+        }
+      }
     }
   }
 }

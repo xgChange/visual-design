@@ -1,4 +1,5 @@
 import { defineComponent, PropType, ExtractPropTypes } from 'vue'
+import { SlotEventType, ExtendedProperty } from '../types'
 
 import Button, { ButtonProps } from 'vant/es/button/index'
 import 'vant/es/button/style/index'
@@ -11,20 +12,51 @@ const props = {
 
 type curButtonProps = ExtractPropTypes<typeof props>
 
-export type VButtonProps = curButtonProps & ButtonProps
+export type VButtonPropsType = curButtonProps & ButtonProps
 
-export default defineComponent<Partial<VButtonProps>>({
+export const VButtonProps = { ...props, ...Button.props }
+
+const VButton = defineComponent<Partial<VButtonPropsType>>({
   name: 'Button',
-  props: { ...props, ...Button.props },
+  props: VButtonProps,
+  inheritAttrs: false,
   preview: () => (
     <Button type="primary" size="small">
       按钮
     </Button>
   ),
-  setup(props) {
+  setup(props, { slots, attrs }) {
     return () => {
       const { label, ...rest } = props
-      return <Button {...rest}>{label}</Button>
+      const innerSlots = {
+        ...slots,
+        default: label ? () => label : slots.default
+      }
+      return <Button {...rest} {...attrs} v-slots={innerSlots} />
     }
-  }
+  },
+  slots: [
+    {
+      type: 'default',
+      alias: '按钮内容'
+    },
+    {
+      type: 'icon',
+      alias: '自定义图标'
+    },
+    {
+      type: 'loading',
+      alias: '自定义加载图标'
+    }
+  ] as SlotEventType[],
+  events: [
+    {
+      type: 'click',
+      alias: '点击事件'
+    }
+  ] as SlotEventType[]
 })
+
+type VButtonType = typeof VButton & ExtendedProperty
+
+export default VButton as VButtonType

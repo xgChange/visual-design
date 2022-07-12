@@ -1,1 +1,1 @@
-export { useVComponent } from './useVComponent'
+export default {}

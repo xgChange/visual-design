@@ -1,5 +1,5 @@
 import create from './create'
-import * as components from './components'
+import components from './components'
 
 export * from './components'
 
