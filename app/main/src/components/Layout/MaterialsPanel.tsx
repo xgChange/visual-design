@@ -1,10 +1,11 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
 import { defineComponent, FunctionalComponent } from 'vue'
-import { VComponentAll } from '@visual/components'
+import { VComponentAll, VComponentType } from '@visual/components'
 
-import { ObjectKeyType } from '@/shared'
+import { ObjectKeyType, OmitComponentType } from '@/shared'
 import { PANEL_GROUP_TYPE, panelGroupName, componentName } from '@/config/enum'
-import styles from './csss/MaterialPanel.module.scss'
+import styles from './css/MaterialPanel.module.scss'
+import { useVisualStore } from '@/store'
 
 function initPanelData() {
   const panelData = {
@@ -37,7 +38,13 @@ export default defineComponent({
   name: 'MaterialsPanel',
   setup() {
     const { panelData } = initPanelData()
+    const { addCurPageComponent } = useVisualStore()
     const defaultOpen = [PANEL_GROUP_TYPE.COMPONENT]
+
+    function selectComponent(com: VComponentType) {
+      addCurPageComponent(com as OmitComponentType)
+    }
+
     return () => (
       <NCollapse
         class={styles.materialPanel}
@@ -56,6 +63,7 @@ export default defineComponent({
           <div class={styles.component}>
             {panelData.component.map(Com => (
               <ListItem
+                onClick={() => selectComponent(Com)}
                 tips={
                   componentName[Com.name as ObjectKeyType<typeof componentName>]
                 }

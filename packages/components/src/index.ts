@@ -7,4 +7,6 @@ export const VComponentAll = Object.keys(components).map(
   key => components[key as keyof typeof components]
 )
 
+export type VComponentType = typeof VComponentAll[number]
+
 export default create(VComponentAll)

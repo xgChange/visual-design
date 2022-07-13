@@ -117,3 +117,102 @@ tsconfig 里面说明
     "paths": { "@visual/*": "../../packages/*/src" }
   }
   ```
+
+### iphone6 为标准 375 \* 667
+
+## vue 相关
+
+### 为啥 watchEffect、watch 不能监听数组的变化，(watch deep 可以监测)
+
+下面是例子
+
+```typescript
+const arr = ref([])
+
+setTimeOut(() => {
+  arr.value.push(1)
+})
+
+// 此时是监测不到 arr 的变化
+watchEffect(() => {
+  console.log(arr.value)
+})
+
+// 同理 watch 也检测不到
+watch(arr, (v, oldv) => {
+  console.log('变化')
+})
+```
+
+分析：
+
+1.  为什么监测不到 arr 的变化?
+
+    - 首先 arr 是一个 ref 包裹的数组，所以我们打开源码查看到 RefImpl 这个类，里面有 get，set(简单来说的话就是在 ref 实例下收集 deps，触发 track 和 trigger)。value 是 **this.\_value = \_\_v_isShallow ? value : toReactive(value)** 会判断是否是对象，然后转为 reactive.
+
+    - 例如 传入的 [] 是数组，**this.\_value** 就把他转换为 reactive 对象。
+
+    - 为什么在 watchEffect 中 arr.value 获取不到 arr.value 的变化？ 因为：监测的只是一个 proxy 的代理对象，没有对里面的属性进行监测。
+
+      ```typescript
+      // reactive 对象里面的 track 是在 proxy的getter 上触发的。而现在只是在watch里面监测一个proxy对象。
+
+      watchEffect(() => {
+        arr.value[0]
+      })
+      // 如果是上面那样，是可以监测到数组0项的变化的。因为在watchEffect中访问了 proxy的getter.
+      ```
+
+2.  为什么 watch deep 可以监测到?
+
+    - 打开源码 **doWatch** 函数。
+
+      ```typescript
+      if (cb && deep) {
+        const baseGetter = getter
+        getter = () => {
+          return traverse(baseGetter())
+        }
+      }
+      ```
+
+    - track: 重点是 traverse 函数，我们假设 baseGetter()返回值是 proxy 的数组。**(value as any)[ReactiveFlags.SKIP]** 这一句是去访问 proxy 的 getter，key 值是 ReactiveFlags.SKIP. 然后去跑 proxy getter 代码，然后会初始化 SKIP 属性的依赖。然后往下走到
+
+      ```typescript
+      // value.length 也会进入 getter 去设置 length的依赖
+      for (let i = 0; i < value.length; i++) {
+        traverse(value[i], seen)
+      }
+      ```
+
+    - trigger: 在 setTimeOut 里面进行 push 操作时候，实际上操作的是 proxy 的 arr，经过测试发现:
+
+      ```typescript
+      const arr = []
+      const pa = new Proxy(arr, {
+        get(t, k, r) {
+          console.log('get', t, k, r)
+          return Reflect.get(t, k, r)
+        },
+        set(t, k, r) {
+          console.log('set', t, k, r)
+          return Reflect.set(t, k, r)
+        }
+      })
+
+      pa.push(1)
+
+      //
+      /**实际会输出
+        get [] push Proxy {}
+        get [] length Proxy {}
+        set [] 0 4
+        set [4] length 1
+      
+        也就是会访问 push、length 的key值，然后再 set 当前索引、length。
+      */
+      ```
+
+      最后触发 trigger 流程，effect 里面触发自定义的 scheduler -> 因为 deep 为 true 所以会触发 watch 的 callback()
+
+    - 而为什么 deep = false 时不能触发 callback 呢？因为 没有收集到 length 的依赖，而 length 的依赖在 traverse 函数中访问到了。
