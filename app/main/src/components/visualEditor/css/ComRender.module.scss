@@ -1,0 +1,8 @@
+.com-render-box {
+  width: 100%;
+  min-height: 50px;
+
+  &:hover {
+    outline: 1px dashed #1989fa;
+  }
+}

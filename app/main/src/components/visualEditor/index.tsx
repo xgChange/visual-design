@@ -1,6 +1,7 @@
 import { computed, defineComponent, watch, shallowRef } from 'vue'
 import { useVisualStore } from '@/store'
 import { OmitComponentType } from '@/shared'
+import ComRender from './ComRender'
 
 export default defineComponent({
   name: 'VisualEditor',
@@ -28,8 +29,10 @@ export default defineComponent({
     return () => {
       return (
         <div style={mainPageStyle.value}>
-          {innerCurPageComponets?.value?.map(Com => (
-            <Com />
+          {innerCurPageComponets.value?.map(Com => (
+            <ComRender>
+              <Com />
+            </ComRender>
           ))}
         </div>
       )
