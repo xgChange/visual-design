@@ -11,5 +11,6 @@
   },
   "extends": "../../tsconfig.common.json",
   "exclude": ["node_modules"],
+  "types": ["vite/client"],
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"]
 }

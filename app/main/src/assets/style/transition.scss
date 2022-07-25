@@ -5,6 +5,10 @@
 }
 .ghost {
   opacity: 0.5;
-  background-color: red;
   border-color: #efeff5 !important;
+}
+
+.ghost-editor {
+  background: #efeff5;
+  opacity: 0.5;
 }

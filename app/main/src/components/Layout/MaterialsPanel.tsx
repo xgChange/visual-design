@@ -3,12 +3,7 @@ import { computed, defineComponent, ref, TransitionGroup } from 'vue'
 import { VComponentAll, VComponentType } from '@visual/components'
 import VueDraggable from 'vuedraggable'
 
-import {
-  createArray,
-  generateNanoId,
-  ObjectKeyType,
-  OmitComponentType
-} from '@/shared'
+import { createArray, generateNanoId, ObjectKeyType } from '@/shared'
 import {
   PANEL_GROUP_TYPE,
   panelGroupName,
@@ -16,7 +11,6 @@ import {
   draggableGroupName
 } from '@/config'
 import styles from './css/MaterialPanel.module.scss'
-import { useVisualStore } from '@/store'
 import { BlockType } from '@/shared'
 
 function initPanelData() {
@@ -55,10 +49,6 @@ export default defineComponent({
       disabled: false
     }))
 
-    function handleChange(evt: any) {
-      console.log('change', evt, componentsData.value)
-    }
-
     function handleStart() {
       drag.value = true
     }
@@ -67,12 +57,12 @@ export default defineComponent({
       drag.value = false
     }
 
-    function createBlock(original: VComponentType) {
+    function createBlock(original: VComponentType, ...rest: any) {
       const block = {
         key: generateNanoId(),
         coms: createArray([{ ...original }]) // 重新解构 component 使其失去响应式
       } as BlockType
-      console.log('clone', block)
+      console.log('clone', block, rest)
       return block
     }
 
@@ -97,7 +87,6 @@ export default defineComponent({
             itemKey="name"
             group={{ name: draggableGroupName, pull: 'clone', put: false }}
             clone={createBlock}
-            onChange={handleChange}
             onStart={handleStart}
             onEnd={handleEnd}
             {...dragOptions.value}

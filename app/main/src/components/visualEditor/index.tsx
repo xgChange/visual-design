@@ -4,7 +4,8 @@ import {
   shallowRef,
   ref,
   TransitionGroup,
-  watchEffect
+  watchEffect,
+  FunctionalComponent
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
@@ -24,23 +25,24 @@ export default defineComponent({
       () => visualEditorData.value.pageConfig?.style
     )
 
+    const drag = ref(false)
+
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
     watchEffect(() => {
       store.setCurPageBlock(innerCurPageComponets.value)
-      console.log(innerCurPageComponets.value, curPageBlocks)
+      console.log(innerCurPageComponets.value, curPageBlocks.value, drag.value)
     })
+
+    const dragOptions = computed(() => ({
+      animation: 200,
+      disabled: false,
+      ghostClass: 'ghost-editor'
+    }))
 
     function handleChange(evt: any) {
       console.log('change-clone', evt)
     }
-
-    const dragOptions = computed(() => ({
-      animation: 200,
-      disabled: false
-    }))
-
-    const drag = ref(false)
 
     function handleStart() {
       drag.value = true
@@ -67,12 +69,8 @@ export default defineComponent({
             {{
               item: ({ element }: { element: BlockType }) => {
                 return (
-                  <TransitionGroup
-                    tag="div"
-                    name="flip-list"
-                    class={[drag.value ? 'styles.dragging' : '']}
-                  >
-                    <BlockRender key={element.key}>
+                  <TransitionGroup tag="div" name="flip-list">
+                    <BlockRender key={element.key} disabled={drag.value}>
                       {element?.coms?.map(Com => (
                         <Com />
                       ))}

@@ -1,4 +1,4 @@
-import { computed, reactive, ref, shallowRef } from 'vue'
+import { computed, reactive, ref } from 'vue'
 import { defineStore, createPinia } from 'pinia'
 import { BlockType, generateNanoId, OmitComponentType } from '@/shared'
 

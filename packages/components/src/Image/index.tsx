@@ -1,18 +1,28 @@
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 import { SlotEventType, ExtendedProperty } from '../types'
 
+import DefaultImg from '../assets/default-img.png'
 import Image, { ImageProps } from 'vant/es/image/index'
 import 'vant/es/image/style/index'
 
 export type VImagePropsType = ImageProps
 
-export const VImageProps = { ...Image.props }
+const props = {
+  src: {
+    type: String as PropType<string>,
+    default: DefaultImg
+  }
+} as const
+
+console.log(props)
+
+export const VImageProps = { ...props } as any
 
 const VImage = defineComponent<Partial<VImagePropsType>>({
   name: 'Image',
   props: VImageProps,
   inheritAttrs: false,
-  preview: () => <Image src=""></Image>,
+  preview: () => <Image src={DefaultImg}></Image>,
   setup(props, { slots, attrs }) {
     return () => {
       const { ...rest } = props

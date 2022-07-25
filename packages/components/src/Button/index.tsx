@@ -6,7 +6,8 @@ import 'vant/es/button/style/index'
 
 const props = {
   label: {
-    type: String as PropType<string>
+    type: String as PropType<string>,
+    default: '按钮'
   }
 } as const
 

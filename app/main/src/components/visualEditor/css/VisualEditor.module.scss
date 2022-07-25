@@ -1,5 +1,19 @@
+@mixin ghostCom() {
+  background: #efeff5;
+  opacity: 0.5;
+  width: 100%;
+  height: 70px;
+}
+
 .visual-editor {
   .visual-blocks {
     min-height: 70px;
+    &.place-blocks {
+      @include ghostCom;
+    }
+
+    .ghost-com {
+      @include ghostCom;
+    }
   }
 }

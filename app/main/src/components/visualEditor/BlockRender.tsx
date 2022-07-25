@@ -1,5 +1,5 @@
 import { NTooltip } from 'naive-ui'
-import { defineComponent } from 'vue'
+import { defineComponent, PropType } from 'vue'
 
 import { MaskLayer } from '@/components/Base'
 
@@ -7,10 +7,22 @@ import style from './css/BlockRender.module.scss'
 
 export default defineComponent({
   name: 'BlockRender',
+  props: {
+    disabled: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    }
+  },
   setup(props, { slots }) {
     return () => {
       return (
-        <div class={style.comRenderBox}>
+        <div
+          class={[
+            props.disabled
+              ? `${style.comRenderBox}--disabled`
+              : style.comRenderBox
+          ]}
+        >
           <NTooltip
             trigger="click"
             v-slots={{
