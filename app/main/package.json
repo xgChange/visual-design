@@ -12,10 +12,12 @@
     "@visual/components": "workspace:*",
     "@visual/shared": "workspace:*",
     "naive-ui": "^2.30.8",
+    "nanoid": "^4.0.0",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.15",
     "vfonts": "^0.0.3",
-    "vue": "^3.2.25"
+    "vue": "^3.2.25",
+    "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
     "@typescript-eslint/eslint-plugin": "^5.30.0",

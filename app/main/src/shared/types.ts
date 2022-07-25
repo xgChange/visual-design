@@ -14,9 +14,12 @@ interface Component {
 }
 
 export type OmitComponentType = VComponentType & Component
-
+export type BlockType = {
+  key?: string
+  coms?: OmitComponentType[]
+}
 export interface CurPageInfo {
-  components: OmitComponentType[]
+  blocks: BlockType[]
   path: string
   title: string
 }

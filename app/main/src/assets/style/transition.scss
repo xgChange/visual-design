@@ -1,0 +1,10 @@
+.flip-list {
+  &-move {
+    // transition: transform 0.1s;
+  }
+}
+.ghost {
+  opacity: 0.5;
+  background-color: red;
+  border-color: #efeff5 !important;
+}

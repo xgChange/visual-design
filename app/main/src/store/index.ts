@@ -1,8 +1,8 @@
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, shallowRef } from 'vue'
 import { defineStore, createPinia } from 'pinia'
-import { OmitComponentType } from '@/shared'
+import { BlockType, generateNanoId, OmitComponentType } from '@/shared'
 
-import { VisualEditorType } from '@/shared'
+import { VisualEditorType, createArray } from '@/shared'
 
 export const useVisualStore = defineStore('visualEditorConfig', () => {
   const visualEditorData = reactive<Partial<VisualEditorType>>({
@@ -13,7 +13,7 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
     },
     page: {
       '/': {
-        components: [] as OmitComponentType[],
+        blocks: [] as BlockType[],
         path: '/',
         title: '首页'
       }
@@ -24,18 +24,56 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
 
   const curPageInfo = computed(() => visualEditorData?.page?.[selectPath.value])
 
-  const curPageComponents = ref(curPageInfo.value?.components)
+  const curPageBlocks = computed(() => curPageInfo.value?.blocks)
 
-  function addCurPageComponent(com: OmitComponentType) {
-    curPageComponents.value?.push(com)
+  // 为当前 page 的 block 增加 com
+  function addCurPageComponentByBlock(
+    com: OmitComponentType,
+    blockKey?: string
+  ) {
+    const blockLength = curPageBlocks.value?.length
+    let blockIndex = blockLength
+    if (blockKey === undefined) {
+      blockIndex = blockLength
+    }
+
+    // 如果没有key
+    if (
+      curPageBlocks.value &&
+      blockKey === undefined &&
+      blockIndex !== undefined
+    ) {
+      if (!curPageBlocks.value[blockIndex]) {
+        curPageBlocks.value[blockIndex] = {
+          coms: createArray(),
+          key: generateNanoId()
+        } as BlockType
+      }
+      curPageBlocks.value![blockIndex].coms!.push(com)
+    }
+
+    if (curPageBlocks.value && blockKey) {
+      const curBlock = curPageBlocks.value.find(block => block.key === blockKey)
+      if (curBlock) {
+        curBlock.coms?.push(com)
+      }
+    }
+  }
+
+  // 设置当前 page 的block
+  function setCurPageBlock(block: BlockType[]) {
+    if (curPageInfo.value) {
+      curPageInfo.value.blocks = block
+    }
   }
 
   return {
     visualEditorData,
     curPageInfo,
     selectPath,
-    curPageComponents,
-    addCurPageComponent
+    curPageBlocks,
+    addCurPageComponentByBlock,
+    setCurPageBlock
   }
 })
 

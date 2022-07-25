@@ -1,0 +1,1 @@
+export const draggableGroupName = 'ComponentGroup'

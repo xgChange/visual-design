@@ -5,5 +5,6 @@ import 'vfonts/FiraCode.css'
 
 import './base.scss'
 import './common.scss'
+import './transition.scss'
 
 import 'normalize.css'
