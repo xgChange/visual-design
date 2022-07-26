@@ -1,9 +1,22 @@
-import { NTooltip } from 'naive-ui'
-import { defineComponent, PropType } from 'vue'
+import { NButton, NTooltip } from 'naive-ui'
+import { defineComponent, FunctionalComponent, PropType } from 'vue'
 
+import { NOOP } from '@/shared'
 import { MaskLayer } from '@/components/Base'
 
 import style from './css/BlockRender.module.scss'
+
+const OperationArea: FunctionalComponent<{
+  onInsert: () => void
+}> = props => {
+  return (
+    <div class={style.comOperationArea}>
+      <NButton type="info" size="tiny" onClick={props.onInsert}>
+        插入组件
+      </NButton>
+    </div>
+  )
+}
 
 export default defineComponent({
   name: 'BlockRender',
@@ -11,6 +24,14 @@ export default defineComponent({
     disabled: {
       type: Boolean as PropType<boolean>,
       default: false
+    },
+    selected: {
+      type: Boolean as PropType<boolean>,
+      default: false
+    },
+    inSert: {
+      type: Function as PropType<typeof NOOP>,
+      default: NOOP
     }
   },
   setup(props, { slots }) {
@@ -18,9 +39,11 @@ export default defineComponent({
       return (
         <div
           class={[
-            props.disabled
-              ? `${style.comRenderBox}--disabled`
-              : style.comRenderBox
+            style.comRenderBox,
+            {
+              [`${style.comRenderBoxDisabled}`]: props.disabled,
+              [`${style.comRenderBoxSelected}`]: props.selected
+            }
           ]}
         >
           <NTooltip
@@ -34,6 +57,7 @@ export default defineComponent({
               default: () => '编辑内容'
             }}
           ></NTooltip>
+          <OperationArea v-show={props.selected} onInsert={props.inSert} />
         </div>
       )
     }

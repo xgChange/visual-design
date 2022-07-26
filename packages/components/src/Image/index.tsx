@@ -14,8 +14,6 @@ const props = {
   }
 } as const
 
-console.log(props)
-
 export const VImageProps = { ...props } as any
 
 const VImage = defineComponent<Partial<VImagePropsType>>({

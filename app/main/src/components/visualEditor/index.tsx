@@ -4,8 +4,7 @@ import {
   shallowRef,
   ref,
   TransitionGroup,
-  watchEffect,
-  FunctionalComponent
+  watch
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
@@ -13,13 +12,15 @@ import { BlockType } from '@/shared'
 import BlockRender from './BlockRender'
 import VueDraggable from 'vuedraggable'
 import { draggableGroupName } from '@/config'
+
+import { useSelectedStatus } from '@/hooks'
 import styles from './css/VisualEditor.module.scss'
 
 export default defineComponent({
   name: 'VisualEditor',
   setup() {
     const store = useVisualStore()
-    const { curPageBlocks, visualEditorData } = storeToRefs(store)
+    const { visualEditorData } = storeToRefs(store)
 
     const mainPageStyle = computed(
       () => visualEditorData.value.pageConfig?.style
@@ -29,9 +30,14 @@ export default defineComponent({
 
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
-    watchEffect(() => {
-      store.setCurPageBlock(innerCurPageComponets.value)
-      console.log(innerCurPageComponets.value, curPageBlocks.value, drag.value)
+    const { selectedBlock, setSelectedKey } = useSelectedStatus(
+      innerCurPageComponets
+    )
+
+    const editorDisableDrag = ref(false)
+
+    watch(innerCurPageComponets, v => {
+      store.setCurPageBlock(v)
     })
 
     const dragOptions = computed(() => ({
@@ -52,6 +58,19 @@ export default defineComponent({
       drag.value = false
     }
 
+    function handleClick(key: string) {
+      setSelectedKey(key)
+    }
+
+    function handleMove(ctx: any) {
+      setSelectedKey(ctx.draggedContext.element.key)
+    }
+
+    function handleInsertCom() {
+      console.log('insert')
+      editorDisableDrag.value = true // 暂时写成这样
+    }
+
     // 要拆成一个 渲染组件，用来自定义编辑功能
     return () => {
       return (
@@ -63,6 +82,7 @@ export default defineComponent({
             onChange={handleChange}
             onStart={handleStart}
             onEnd={handleEnd}
+            move={handleMove}
             class={[styles.visualBlocks]}
             {...dragOptions.value}
           >
@@ -70,10 +90,27 @@ export default defineComponent({
               item: ({ element }: { element: BlockType }) => {
                 return (
                   <TransitionGroup tag="div" name="flip-list">
-                    <BlockRender key={element.key} disabled={drag.value}>
-                      {element?.coms?.map(Com => (
+                    <BlockRender
+                      key={element.key}
+                      disabled={drag.value}
+                      selected={selectedBlock.value === element.key}
+                      onClick={() => handleClick(element.key!)}
+                      inSert={handleInsertCom}
+                    >
+                      {/* {element?.coms?.map(Com => (
                         <Com />
-                      ))}
+                      ))} */}
+                      <VueDraggable
+                        v-model={element.coms}
+                        itemKey="name"
+                        group={draggableGroupName}
+                      >
+                        {/* {{
+                          item: ({ element }) => {
+                            return <div>{element.name}</div>
+                          }
+                        }} */}
+                      </VueDraggable>
                     </BlockRender>
                   </TransitionGroup>
                 )

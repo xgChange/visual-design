@@ -1,19 +1,38 @@
+@mixin outLine() {
+  position: relative;
+  z-index: 2;
+  outline: 1px solid #1989fa;
+  outline-offset: -2px;
+}
+
+@mixin content() {
+  position: absolute;
+  left: 0;
+  bottom: -22px;
+  display: flex;
+  flex-direction: column;
+  background: #e1e4eb;
+}
+
 .com-render-box {
   width: 100%;
   min-height: 50px;
   padding: 2px;
   box-sizing: border-box;
-
-  &:hover {
-    position: relative;
-    z-index: 2;
-    outline: 1px solid #1989fa;
-    outline-offset: -2px;
-  }
+  cursor: move;
 
   &--disabled {
     &:hover {
       outline: 1px solid #e1e4eb;
     }
+  }
+
+  &--selected {
+    @include outLine;
+  }
+
+  .com_operation-area {
+    @include content();
+    cursor: pointer;
   }
 }
