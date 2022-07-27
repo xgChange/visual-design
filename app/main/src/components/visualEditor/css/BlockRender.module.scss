@@ -7,8 +7,8 @@
 
 @mixin content() {
   position: absolute;
-  left: 0;
-  bottom: -22px;
+  left: 1px;
+  bottom: -21px;
   display: flex;
   flex-direction: column;
   background: #e1e4eb;

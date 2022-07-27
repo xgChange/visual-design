@@ -1,5 +1,11 @@
 import { NCollapse, NCollapseItem } from 'naive-ui'
-import { computed, defineComponent, ref, TransitionGroup } from 'vue'
+import {
+  computed,
+  defineComponent,
+  ref,
+  shallowRef,
+  TransitionGroup
+} from 'vue'
 import { VComponentAll, VComponentType } from '@visual/components'
 import VueDraggable from 'vuedraggable'
 
@@ -12,6 +18,7 @@ import {
 } from '@/config'
 import styles from './css/MaterialPanel.module.scss'
 import { BlockType } from '@/shared'
+import { useVisualStore } from '@/store'
 
 function initPanelData() {
   const panelData = {
@@ -38,6 +45,10 @@ export default defineComponent({
   setup() {
     const { panelData } = initPanelData()
 
+    const store = useVisualStore()
+
+    const isNestedDrag = computed(() => store.editorDragType === 'nested')
+
     const defaultOpen = [PANEL_GROUP_TYPE.COMPONENT]
 
     const componentsData = ref(panelData[PANEL_GROUP_TYPE.COMPONENT])
@@ -57,12 +68,17 @@ export default defineComponent({
       drag.value = false
     }
 
-    function createBlock(original: VComponentType, ...rest: any) {
+    function createBlock(original: VComponentType) {
+      if (isNestedDrag.value) {
+        const result = Object.assign({ key: generateNanoId() }, { ...original })
+        console.log('clone', result)
+        return result
+      }
       const block = {
         key: generateNanoId(),
-        coms: createArray([{ ...original }]) // 重新解构 component 使其失去响应式
+        coms: shallowRef(createArray([{ ...original, key: generateNanoId() }])) // 重新解构 component 使其失去响应式
       } as BlockType
-      console.log('clone', block, rest)
+      console.log('clone', block)
       return block
     }
 

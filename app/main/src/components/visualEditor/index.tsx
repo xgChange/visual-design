@@ -20,7 +20,7 @@ export default defineComponent({
   name: 'VisualEditor',
   setup() {
     const store = useVisualStore()
-    const { visualEditorData } = storeToRefs(store)
+    const { visualEditorData, editorDragType } = storeToRefs(store)
 
     const mainPageStyle = computed(
       () => visualEditorData.value.pageConfig?.style
@@ -30,19 +30,26 @@ export default defineComponent({
 
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
-    const { selectedBlock, setSelectedKey } = useSelectedStatus(
+    const { selectedBlockKey, setSelectedKey } = useSelectedStatus(
       innerCurPageComponets
     )
 
-    const editorDisableDrag = ref(false)
+    const editorDisableDrag = computed(() => editorDragType.value === 'nested')
 
     watch(innerCurPageComponets, v => {
+      console.log(v)
       store.setCurPageBlock(v)
     })
 
     const dragOptions = computed(() => ({
       animation: 200,
-      disabled: false,
+      disabled: editorDisableDrag.value,
+      ghostClass: 'ghost-editor'
+    }))
+
+    const nestedDragOptions = computed(() => ({
+      animation: 200,
+      disabled: !editorDisableDrag.value,
       ghostClass: 'ghost-editor'
     }))
 
@@ -66,9 +73,11 @@ export default defineComponent({
       setSelectedKey(ctx.draggedContext.element.key)
     }
 
-    function handleInsertCom() {
-      console.log('insert')
-      editorDisableDrag.value = true // 暂时写成这样
+    function handleInsertCom(type: string) {
+      console.log(type)
+      type === 'insert'
+        ? store.setEditorDragType('nested')
+        : store.setEditorDragType('default')
     }
 
     // 要拆成一个 渲染组件，用来自定义编辑功能
@@ -93,23 +102,24 @@ export default defineComponent({
                     <BlockRender
                       key={element.key}
                       disabled={drag.value}
-                      selected={selectedBlock.value === element.key}
+                      selected={selectedBlockKey.value === element.key}
                       onClick={() => handleClick(element.key!)}
-                      inSert={handleInsertCom}
+                      onInsert={type => handleInsertCom(type)}
                     >
                       {/* {element?.coms?.map(Com => (
                         <Com />
                       ))} */}
                       <VueDraggable
-                        v-model={element.coms}
+                        v-model={element.coms!.value}
                         itemKey="name"
                         group={draggableGroupName}
+                        {...nestedDragOptions.value}
                       >
-                        {/* {{
-                          item: ({ element }) => {
-                            return <div>{element.name}</div>
+                        {{
+                          item: ({ element: Com }: any) => {
+                            return <Com />
                           }
-                        }} */}
+                        }}
                       </VueDraggable>
                     </BlockRender>
                   </TransitionGroup>

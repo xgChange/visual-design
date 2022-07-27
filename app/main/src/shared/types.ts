@@ -1,6 +1,7 @@
 export type ObjectKeyType<T> = keyof T
 
 import { VComponentType } from '@visual/components'
+import { ShallowRef } from 'vue'
 
 interface PageConfig {
   style: Record<string, string>
@@ -16,7 +17,7 @@ interface Component {
 export type OmitComponentType = VComponentType & Component
 export type BlockType = {
   key?: string
-  coms?: OmitComponentType[]
+  coms?: ShallowRef<OmitComponentType[]>
 }
 export interface CurPageInfo {
   blocks: BlockType[]

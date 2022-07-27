@@ -1,8 +1,10 @@
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, shallowRef } from 'vue'
 import { defineStore, createPinia } from 'pinia'
 import { BlockType, generateNanoId, OmitComponentType } from '@/shared'
 
 import { VisualEditorType, createArray } from '@/shared'
+
+type DragType = 'default' | 'nested'
 
 export const useVisualStore = defineStore('visualEditorConfig', () => {
   const visualEditorData = reactive<Partial<VisualEditorType>>({
@@ -21,6 +23,8 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
   })
 
   const selectPath = ref('/') // 当前 设置(选择)的路由
+
+  const editorDragType = ref<DragType>('default')
 
   const curPageInfo = computed(() => visualEditorData?.page?.[selectPath.value])
 
@@ -45,17 +49,17 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
     ) {
       if (!curPageBlocks.value[blockIndex]) {
         curPageBlocks.value[blockIndex] = {
-          coms: createArray(),
+          coms: shallowRef(createArray()),
           key: generateNanoId()
         } as BlockType
       }
-      curPageBlocks.value![blockIndex].coms!.push(com)
+      curPageBlocks.value![blockIndex].coms!.value.push(com)
     }
 
     if (curPageBlocks.value && blockKey) {
       const curBlock = curPageBlocks.value.find(block => block.key === blockKey)
       if (curBlock) {
-        curBlock.coms?.push(com)
+        curBlock.coms?.value.push(com)
       }
     }
   }
@@ -67,13 +71,19 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
     }
   }
 
+  function setEditorDragType(type: DragType) {
+    editorDragType.value = type
+  }
+
   return {
     visualEditorData,
     curPageInfo,
     selectPath,
     curPageBlocks,
+    editorDragType,
     addCurPageComponentByBlock,
-    setCurPageBlock
+    setCurPageBlock,
+    setEditorDragType
   }
 })
 
