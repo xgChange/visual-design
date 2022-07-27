@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ExtractPropTypes, onMounted } from 'vue'
+import { defineComponent, PropType, ExtractPropTypes } from 'vue'
 import { SlotEventType, ExtendedProperty } from '../types'
 
 import Button, { ButtonProps } from 'vant/es/button/index'
@@ -27,9 +27,6 @@ const VButton = defineComponent<Partial<VButtonPropsType>>({
     </Button>
   ),
   setup(props, { slots, attrs }) {
-    onMounted(() => {
-      console.log('button mounted')
-    })
     return () => {
       const { label, ...rest } = props
       const innerSlots = {

@@ -67,6 +67,7 @@ export default defineComponent({
         >
           <NTooltip
             trigger="click"
+            disabled={props.disabled}
             v-slots={{
               trigger: () =>
                 // <MaskLayer cursor="move">

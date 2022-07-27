@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .vue,.ts,.tsx,.jsx --fix"
   },
   "dependencies": {
+    "@vicons/fluent": "^0.12.0",
     "@visual/components": "workspace:*",
     "@visual/shared": "workspace:*",
     "naive-ui": "^2.30.8",
