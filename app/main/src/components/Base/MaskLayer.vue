@@ -1,15 +1,17 @@
 <script lang="ts" setup>
 interface LayerProps {
   cursor?: 'move' | 'pointer' | 'default'
+  unlock?: boolean
 }
 
 withDefaults(defineProps<LayerProps>(), {
-  cursor: 'default'
+  cursor: 'default',
+  unlock: false
 })
 </script>
 
 <template>
-  <div class="mask-layer">
+  <div class="mask-layer" :class="{ 'mask-layer--unlock': unlock }">
     <slot />
   </div>
 </template>
@@ -29,6 +31,12 @@ withDefaults(defineProps<LayerProps>(), {
     width: 100%;
     height: 100%;
     z-index: 2;
+  }
+
+  &--unlock {
+    &::before {
+      display: none;
+    }
   }
 }
 </style>

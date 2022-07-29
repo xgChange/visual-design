@@ -1,8 +1,7 @@
 import { NOOP } from '@/shared'
-import { NButton, NTooltip } from 'naive-ui'
+import { NButton } from 'naive-ui'
 import { defineComponent, PropType, ref } from 'vue'
-
-// import { MaskLayer } from '@/components/Base'
+import { MaskLayer } from '../Base'
 
 import style from './css/BlockRender.module.scss'
 
@@ -22,8 +21,8 @@ const OperationArea = defineComponent({
       type: 'insert'
     }
     const cancelBtnInfo = {
-      text: '取消',
-      type: 'cancel'
+      text: '完成',
+      type: 'finish'
     }
     const btnInfo = ref(insertBtnInfo)
     return () => (
@@ -36,7 +35,7 @@ const OperationArea = defineComponent({
   }
 })
 
-export default defineComponent({
+const BlockRender = defineComponent({
   name: 'BlockRender',
   props: {
     disabled: {
@@ -54,6 +53,16 @@ export default defineComponent({
   },
   emits: ['insert'],
   setup(props, { slots }) {
+    const lockMaskLayer = ref(true)
+
+    function handleInsert(type: string) {
+      if (type === 'insert') {
+        lockMaskLayer.value = false
+      } else {
+        lockMaskLayer.value = true
+      }
+      props.onInsert(type)
+    }
     return () => {
       return (
         <div
@@ -65,21 +74,18 @@ export default defineComponent({
             }
           ]}
         >
-          <NTooltip
-            trigger="click"
-            disabled={props.disabled}
-            v-slots={{
-              trigger: () =>
-                // <MaskLayer cursor="move">
-                //   {slots.default?.() || <div>组件占位</div>}
-                // </MaskLayer>
-                slots.default?.() || <div>组件占位</div>,
-              default: () => '编辑内容'
-            }}
-          ></NTooltip>
-          <OperationArea v-show={props.selected} onInsert={props.onInsert} />
+          {lockMaskLayer.value ? (
+            <MaskLayer cursor="move">{slots.default?.()}</MaskLayer>
+          ) : (
+            slots?.default?.()
+          )}
+          <OperationArea v-show={props.selected} onInsert={handleInsert} />
         </div>
       )
     }
   }
 })
+
+export type BlockRenderType = InstanceType<typeof BlockRender> | null
+
+export default BlockRender

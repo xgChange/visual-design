@@ -9,7 +9,7 @@ import {
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
-import { BlockType } from '@/shared'
+import { BlockType, OmitComponentType } from '@/shared'
 import BlockRender from './BlockRender'
 import VueDraggable from 'vuedraggable'
 import { draggableGroupName } from '@/config'
@@ -17,6 +17,7 @@ import { GuideDrag } from '@/components/Base'
 
 import { useSelectedStatus } from '@/hooks'
 import styles from './css/VisualEditor.module.scss'
+import { useGuideDrag } from './hooks/useGuideDrag'
 
 type BlockRenderType = InstanceType<typeof BlockRender> | null
 
@@ -24,6 +25,7 @@ export default defineComponent({
   name: 'VisualEditor',
   setup() {
     const store = useVisualStore()
+
     const { visualEditorData, editorDragType } = storeToRefs(store)
 
     const mainPageStyle = computed(
@@ -32,34 +34,17 @@ export default defineComponent({
 
     const drag = ref(false)
 
-    const blockRefs = ref<Set<BlockRenderType>>(new Set()) // 收集refs
-
-    const selectedBlockRef = computed(() =>
-      Array.from(blockRefs.value).find(ref => ref?.selected)
-    )
-
-    const selectedBlockRefClientRect = computed(() => {
-      if (selectedBlockRef.value) {
-        const rect = selectedBlockRef.value.$el.getBoundingClientRect()
-        return {
-          x: rect.x,
-          y: rect.y
-        }
-      }
-      return null
-    })
-
     const innerCurPageComponets = shallowRef<BlockType[]>([])
+
+    const editorDisableDrag = computed(() => editorDragType.value === 'nested')
 
     const { selectedBlockKey, setSelectedKey } = useSelectedStatus(
       innerCurPageComponets
     )
 
-    const editorDisableDrag = computed(() => editorDragType.value === 'nested')
-
-    const showGuidTips = computed(
-      () => selectedBlockRef.value && editorDisableDrag.value
-    )
+    // 拖拽指引
+    const { blockRefs, showGuidTips, selectedBlockRefClientRect } =
+      useGuideDrag(editorDisableDrag)
 
     watch(innerCurPageComponets, v => {
       store.setCurPageBlock(v)
@@ -84,12 +69,12 @@ export default defineComponent({
       console.log('change-clone', evt)
     }
 
-    function handleStart() {
-      drag.value = true
-    }
-
-    function handleEnd() {
-      drag.value = false
+    function handleStartAndEndEvent(type: 'start' | 'end') {
+      if (type === 'start') {
+        drag.value = true
+      } else {
+        drag.value = false
+      }
     }
 
     function handleClick(key: string) {
@@ -113,7 +98,7 @@ export default defineComponent({
       return selectedBlockKey.value === key
     }
 
-    // 要拆成一个 渲染组件，用来自定义编辑功能
+    // 有一个 递归 render 组件问题，在vite热更新的时候
     return () => {
       return (
         <div style={mainPageStyle.value} class={styles.visualEditor}>
@@ -128,16 +113,13 @@ export default defineComponent({
               />
             </Teleport>
           )}
-          {/* <Teleport to="body">
-            <GuideDrag style={{position: 'relative', top: }} />
-          </Teleport> */}
           <VueDraggable
             v-model={innerCurPageComponets.value}
             itemKey="key"
             group={draggableGroupName}
             onChange={handleChange}
-            onStart={handleStart}
-            onEnd={handleEnd}
+            onStart={() => handleStartAndEndEvent('start')}
+            onEnd={() => handleStartAndEndEvent('end')}
             move={handleMove}
             class={[styles.visualBlocks]}
             {...dragOptions.value}
@@ -160,17 +142,18 @@ export default defineComponent({
                         blockRefs.value.add(ref as BlockRenderType)
                       }}
                     >
-                      {/* {element?.coms?.map(Com => (
-                        <Com />
-                      ))} */}
                       <VueDraggable
                         v-model={element.coms!.value}
-                        itemKey="name"
+                        itemKey="key"
                         group={draggableGroupName}
                         {...getNestedDragOption(element.key!).value}
                       >
                         {{
-                          item: ({ element: Com }: any) => {
+                          item: ({
+                            element: Com
+                          }: {
+                            element: OmitComponentType
+                          }) => {
                             return <Com />
                           }
                         }}

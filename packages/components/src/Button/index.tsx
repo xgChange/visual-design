@@ -1,8 +1,15 @@
 import { defineComponent, PropType, ExtractPropTypes } from 'vue'
-import { SlotEventType, ExtendedProperty } from '../types'
+import {
+  SlotEventType,
+  ExtendedProperty,
+  ComEditorPropType,
+  ComEditorWidgetType
+} from '../types'
 
-import Button, { ButtonProps } from 'vant/es/button/index'
+import Button, { ButtonProps, ButtonType } from 'vant/es/button/index'
 import 'vant/es/button/style/index'
+import { createEditorPropsFactory, createSelectionFactory } from '../utils'
+import { ButtonSize } from 'vant'
 
 const props = {
   label: {
@@ -17,6 +24,31 @@ export type VButtonPropsType = curButtonProps & ButtonProps
 
 export const VButtonProps = { ...props } as any
 
+const allProps = { ...props, ...Button.props }
+
+const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
+  label: createEditorPropsFactory(allProps.label)(
+    '默认按钮',
+    ComEditorWidgetType.INPUT
+  ),
+  size: createEditorPropsFactory(allProps.size)(
+    allProps.size.default,
+    ComEditorWidgetType.SELECT,
+    createSelectionFactory(
+      ['large', 'mini', 'normal', 'small'] as ButtonSize[],
+      item => ({ label: item, value: item })
+    )
+  ),
+  type: createEditorPropsFactory(allProps.type)(
+    allProps.type.default,
+    ComEditorWidgetType.SELECT,
+    createSelectionFactory(
+      ['primary', 'success', 'warning', 'danger'] as ButtonType[],
+      item => ({ label: item, value: item })
+    )
+  ),
+  color: createEditorPropsFactory(allProps.color)('', ComEditorWidgetType.COLOR)
+}
 const VButton = defineComponent<Partial<VButtonPropsType>>({
   name: 'Button',
   props: VButtonProps,
@@ -55,7 +87,8 @@ const VButton = defineComponent<Partial<VButtonPropsType>>({
       type: 'click',
       alias: '点击事件'
     }
-  ] as SlotEventType[]
+  ] as SlotEventType[],
+  editorProps
 })
 
 type VButtonType = typeof VButton & ExtendedProperty
