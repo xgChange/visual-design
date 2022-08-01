@@ -1,0 +1,16 @@
+.sider-right-base {
+  :global {
+    .n-tabs-tab {
+      &--active {
+        color: #1989fa !important;
+      }
+      &:hover {
+        color: #1989fa !important;
+      }
+    }
+
+    .n-tabs-bar {
+      background-color: #1989fa !important;
+    }
+  }
+}

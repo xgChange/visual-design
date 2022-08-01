@@ -10,7 +10,7 @@ export type ExtendedProperty = {
 }
 
 // 编辑组件prop的类型
-export enum ComEditorWidgetType {
+export const enum ComEditorWidgetType {
   INPUT = 'input',
   INPUTNUMBER = 'inputNumber',
   COLOR = 'color',
@@ -29,6 +29,7 @@ export interface ComEditorPropsValueType {
   type: NativeConstructorType | NativeConstructorType[] // prop 的类型
   widgetType: ComEditorWidgetType
   defaultValue: string
+  alias: string
   options?: SelectOptionItemType[]
 }
 

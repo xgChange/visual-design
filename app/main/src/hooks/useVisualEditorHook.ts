@@ -11,7 +11,7 @@ export function useSelectedStatus(curPageComponents: ShallowRef<BlockType[]>) {
   }
 
   watch(curPageComponents, (v, oldv) => {
-    if (v.length !== oldv.length) {
+    if (v.length !== oldv.length && v.length) {
       const length = v.length
       selectedBlockKey.value = v[length - 1].key!
     }

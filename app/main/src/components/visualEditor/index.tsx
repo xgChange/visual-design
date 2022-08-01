@@ -5,7 +5,8 @@ import {
   ref,
   TransitionGroup,
   watch,
-  Teleport
+  Teleport,
+  nextTick
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
@@ -18,8 +19,17 @@ import { GuideDrag } from '@/components/Base'
 import { useSelectedStatus } from '@/hooks'
 import styles from './css/VisualEditor.module.scss'
 import { useGuideDrag } from './hooks/useGuideDrag'
+import { NDropdown } from 'naive-ui'
+import { MaybeArray } from 'naive-ui/es/_utils'
 
 type BlockRenderType = InstanceType<typeof BlockRender> | null
+
+const contextOptions = [
+  {
+    label: '删除',
+    key: 'delete'
+  }
+]
 
 export default defineComponent({
   name: 'VisualEditor',
@@ -28,11 +38,17 @@ export default defineComponent({
 
     const { visualEditorData, editorDragType } = storeToRefs(store)
 
+    const drag = ref(false)
+
+    const xRef = ref(0)
+
+    const yRef = ref(0)
+
+    const showDropdownRef = ref(false)
+
     const mainPageStyle = computed(
       () => visualEditorData.value.pageConfig?.style
     )
-
-    const drag = ref(false)
 
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
@@ -98,6 +114,31 @@ export default defineComponent({
       return selectedBlockKey.value === key
     }
 
+    function handleContextMenu(e: MouseEvent, show: boolean) {
+      if (show) {
+        e.preventDefault()
+        showDropdownRef.value = false
+        nextTick().then(() => {
+          showDropdownRef.value = true
+          xRef.value = e.clientX
+          yRef.value = e.clientY
+        })
+      }
+    }
+
+    function handleSelectContextOption(v: MaybeArray<string>) {
+      if (typeof v === 'string') {
+        // 删除 block
+        if (!editorDisableDrag.value) {
+          innerCurPageComponets.value = innerCurPageComponets.value.filter(
+            item => item.key !== selectedBlockKey.value
+          )
+          console.log(innerCurPageComponets.value)
+        }
+      }
+      showDropdownRef.value = false
+    }
+
     // 有一个 递归 render 组件问题，在vite热更新的时候
     return () => {
       return (
@@ -113,6 +154,16 @@ export default defineComponent({
               />
             </Teleport>
           )}
+          <NDropdown
+            placement="bottom-start"
+            trigger="manual"
+            x={xRef.value}
+            y={yRef.value}
+            options={contextOptions}
+            show={showDropdownRef.value}
+            onClickoutside={() => (showDropdownRef.value = false)}
+            onSelect={handleSelectContextOption}
+          />
           <VueDraggable
             v-model={innerCurPageComponets.value}
             itemKey="key"
@@ -138,6 +189,13 @@ export default defineComponent({
                       selected={isSelectedCurBlock(element.key!)}
                       onClick={() => handleClick(element.key!)}
                       onInsert={type => handleInsertCom(type)}
+                      oncontextmenu={(e: MouseEvent) =>
+                        handleContextMenu(
+                          e,
+                          !editorDisableDrag.value &&
+                            isSelectedCurBlock(element.key!)
+                        )
+                      }
                       ref={ref => {
                         blockRefs.value.add(ref as BlockRenderType)
                       }}
@@ -154,7 +212,13 @@ export default defineComponent({
                           }: {
                             element: OmitComponentType
                           }) => {
-                            return <Com />
+                            return (
+                              <Com
+                                oncontextmenu={(e: MouseEvent) =>
+                                  handleContextMenu(e, editorDisableDrag.value)
+                                }
+                              />
+                            )
                           }
                         }}
                       </VueDraggable>

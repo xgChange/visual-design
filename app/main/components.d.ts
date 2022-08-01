@@ -9,8 +9,11 @@ declare module '@vue/runtime-core' {
     GuideDrag: typeof import('./src/components/Base/GuideDrag.vue')['default']
     LogoWrapper: typeof import('./src/components/Base/LogoWrapper.vue')['default']
     MaskLayer: typeof import('./src/components/Base/MaskLayer.vue')['default']
+    NForm: typeof import('naive-ui')['NForm']
     NIcon: typeof import('naive-ui')['NIcon']
     NLayout: typeof import('naive-ui')['NLayout']
+    PropForm: typeof import('./src/components/SiderComponent/PropForm.vue')['default']
+    PropList: typeof import('./src/components/Base/PropList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
   }
