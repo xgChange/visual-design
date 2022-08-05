@@ -3,6 +3,7 @@ import { defineStore, createPinia } from 'pinia'
 import { BlockType, generateNanoId, OmitComponentType } from '@/shared'
 
 import { VisualEditorType, createArray } from '@/shared'
+import { useState } from '@/hooks/useState'
 
 type DragType = 'default' | 'nested'
 
@@ -24,13 +25,15 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
 
   const selectPath = ref('/') // 当前 设置(选择)的路由
 
-  const editorDragType = ref<DragType>('default')
+  const [editorDragType, setEditorDragType] = useState<DragType>('default')
+
+  const [selectedComInfo, setSelectedComInfo] = useState<
+    OmitComponentType | undefined
+  >()
 
   const curPageInfo = computed(() => visualEditorData?.page?.[selectPath.value])
 
   const curPageBlocks = computed(() => curPageInfo.value?.blocks)
-
-  const selectedComInfo = ref<OmitComponentType>()
 
   // 为当前 page 的 block 增加 com
   function addCurPageComponentByBlock(
@@ -71,14 +74,6 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
     if (curPageInfo.value) {
       curPageInfo.value.blocks = block
     }
-  }
-
-  function setEditorDragType(type: DragType) {
-    editorDragType.value = type
-  }
-
-  function setSelectedComInfo(info: OmitComponentType | undefined) {
-    selectedComInfo.value = info
   }
 
   return {

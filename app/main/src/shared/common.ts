@@ -12,19 +12,23 @@ export const validateField = (
   value: string,
   rule: NativeConstructorType | NativeConstructorType[]
 ) => {
-  if (rule === Number) {
+  let realRule = rule
+  if (Array.isArray(realRule)) {
+    realRule = realRule[0]
+  }
+  if (realRule === Number) {
     if (isNaN(Number(value))) {
       return undefined
     }
-  } else if (rule === String) {
+  } else if (realRule === String) {
     if (String(value) !== value) {
       return undefined
     }
-  } else if (rule === Boolean) {
+  } else if (realRule === Boolean) {
     if (isNaN(Number(value))) {
       return undefined
     }
   }
 
-  return value
+  return realRule(value)
 }
