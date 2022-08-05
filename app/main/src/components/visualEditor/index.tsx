@@ -36,7 +36,7 @@ export default defineComponent({
   setup() {
     const store = useVisualStore()
 
-    const { visualEditorData, editorDragType, selectedComInfo } =
+    const { visualEditorData, editorDragType, selectedComInfo, curPageBlocks } =
       storeToRefs(store)
 
     const drag = ref(false)
@@ -45,18 +45,27 @@ export default defineComponent({
 
     const selectedComKey = computed(() => selectedComInfo.value?.key)
 
-    const selectedComProps = computed(() =>
-      Object.keys(selectedComInfo.value?.editorProps || {}).reduce(
-        (cur, next) => {
-          const defaultValue =
-            selectedComInfo.value?.editorProps[next].defaultValue
-          const type = selectedComInfo.value?.editorProps[next].type
-          cur[next] = validateField(type(defaultValue), type)
-          return cur
-        },
-        {} as Record<string, any>
-      )
-    )
+    // 这里收集了当前页面上的组件props
+    const curComProps = computed(() => {
+      const pageComs = curPageBlocks.value?.map(item => item.coms).flat() || []
+      // 序列化 com props
+      return pageComs.reduce((cur, next) => {
+        cur[next!.key as string] = Object.keys(next?.editorProps || {}).reduce(
+          (obj, prop) => {
+            // 这里做了一个 响应式依赖，selectedComInfo，在render时候会响应 selectedComInfo收集的依赖，从而从新执行这个computed
+            const curRealEditorProps =
+              selectedComKey.value === next?.key ? selectedComInfo.value : next
+            const defaultValue =
+              curRealEditorProps?.editorProps[prop].defaultValue
+            const type = curRealEditorProps?.editorProps[prop].type
+            obj[prop] = validateField(type(defaultValue), type)
+            return obj
+          },
+          {} as Record<string, string | boolean | number | undefined>
+        )
+        return cur
+      }, {} as Record<string, any>)
+    })
 
     const mainPageStyle = computed(
       () => visualEditorData.value.pageConfig?.style
@@ -141,13 +150,13 @@ export default defineComponent({
 
     function selectedCurComponent(info: OmitComponentType) {
       if (info.key !== selectedComKey.value) {
+        console.log('set-selected-com')
         store.setSelectedComInfo(info)
       }
     }
 
-    function withDisable(fn: (...args: any[]) => any) {
-      console.log(editorDisableDrag.value)
-      if (editorDisableDrag.value) {
+    function withDisableFnByCom(fn: (...args: any[]) => any, key: string) {
+      if (editorDisableDrag.value && isSelectedCurBlock(key)) {
         fn()
       }
     }
@@ -228,7 +237,10 @@ export default defineComponent({
                             return (
                               <div
                                 onClick={() =>
-                                  withDisable(() => selectedCurComponent(Com))
+                                  withDisableFnByCom(
+                                    () => selectedCurComponent(Com),
+                                    element.key!
+                                  )
                                 }
                                 class={[
                                   styles.comWrapper,
@@ -245,9 +257,8 @@ export default defineComponent({
                                       editorDisableDrag.value
                                     )
                                   }
-                                  {...(selectedComKey.value === Com.key
-                                    ? selectedComProps.value
-                                    : {})}
+                                  {...(curComProps.value[Com.key as string] ||
+                                    {})}
                                 />
                               </div>
                             )

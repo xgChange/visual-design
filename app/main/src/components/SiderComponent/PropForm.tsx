@@ -1,4 +1,4 @@
-import { defineComponent, computed, PropType, reactive, watch } from 'vue'
+import { defineComponent, computed, PropType, reactive } from 'vue'
 import {
   ComEditorPropsValueType,
   ComEditorPropType,
@@ -30,11 +30,9 @@ const props = {
 export default defineComponent({
   name: 'PropForm',
   props,
-  emits: ['update:data'],
-  setup(props, { emit }) {
+  setup(props) {
     function dispathWidgets(type: ComEditorWidgetType, item: FormDataItem) {
       const data = props.data[item.key]
-      // const data = item
       switch (type) {
         case ComEditorWidgetType.INPUT:
           return <NInput v-model={[data.defaultValue, 'value']} />
@@ -88,15 +86,6 @@ export default defineComponent({
         })
       )
     })
-
-    watch(
-      formData,
-      v => {
-        console.log(v, 'change')
-        emit('update:data', v)
-      },
-      { deep: true }
-    )
     return () => {
       return (
         <div style={{ padding: '12px' }}>
