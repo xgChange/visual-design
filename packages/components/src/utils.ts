@@ -1,14 +1,27 @@
-import { ComEditorPropsValueType, SelectOptionItemType } from './types'
+import {
+  ComEditorPropsValueType,
+  NativeConstructorType,
+  SelectOptionItemType
+} from './types'
 
 export type Valueof<T> = T[keyof T]
 
 export function createEditorPropsFactory<T>(
   prop: T,
-  alias: string,
+  alias: string
 ) {
+  let realType: T | NativeConstructorType = String
+  if (!(prop as any).type) {
+    if (typeof prop === 'function') {
+      realType = prop
+    }
+  } else {
+    realType = (prop as any).type
+  }
+
   return (...args: Valueof<ComEditorPropsValueType>[]) => {
     const result = {
-      type: (prop as any).type,
+      type: realType,
       alias,
       defaultValue: args[0],
       widgetType: args[1],

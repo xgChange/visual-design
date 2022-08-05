@@ -40,6 +40,7 @@ importers:
 
   app/main:
     specifiers:
+      '@types/lodash': ^4.14.182
       '@typescript-eslint/eslint-plugin': ^5.30.0
       '@typescript-eslint/parser': ^5.30.0
       '@vicons/fluent': ^0.12.0
@@ -51,6 +52,7 @@ importers:
       eslint-config-prettier: ^8.5.0
       eslint-plugin-prettier: ^4.2.1
       eslint-plugin-vue: ^9.1.1
+      lodash: ^4.17.21
       naive-ui: ^2.30.8
       nanoid: ^4.0.0
       normalize.css: ^8.0.1
@@ -71,6 +73,7 @@ importers:
       '@vicons/fluent': 0.12.0
       '@visual/components': link:../../packages/components
       '@visual/shared': link:../../packages/shared
+      lodash: 4.17.21
       naive-ui: 2.31.0_vue@3.2.37
       nanoid: 4.0.0
       normalize.css: 8.0.1
@@ -79,6 +82,7 @@ importers:
       vue: 3.2.37
       vuedraggable: 4.1.0_vue@3.2.37
     devDependencies:
+      '@types/lodash': 4.14.182
       '@typescript-eslint/eslint-plugin': 5.30.5_6zdoc3rn4mpiddqwhppni2mnnm
       '@typescript-eslint/parser': 5.30.5_4x5o4skxv6sl53vpwefgt23khm
       '@vitejs/plugin-vue': 2.3.3_vite@2.9.14+vue@3.2.37
@@ -1007,7 +1011,6 @@ packages:
 
   /@types/lodash/4.14.182:
     resolution: {integrity: sha512-/THyiqyQAP9AfARo4pF+aCGcyiQ94tX/Is2I7HofNRqoYLgN1PBoOWu2/zTA5zMxzP5EFutMtWtGAFRKUe961Q==}
-    dev: false
 
   /@types/minimist/1.2.2:
     resolution: {integrity: sha512-jhuKLIRrhvCPLqwPcx6INqmKeiA5EWrsCOPhrlFSrbrmU4ZMPjj5Ul/oLCMDO98XRUIwVm78xICz4EPCektzeQ==}

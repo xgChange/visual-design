@@ -5,7 +5,7 @@ export * from './components'
 
 export type { ComEditorPropType, ComEditorPropsValueType } from './types'
 
-export { ComEditorWidgetType } from './types'
+export * from './types'
 
 export const VComponentAll = Object.keys(components).map(
   key => components[key as keyof typeof components]

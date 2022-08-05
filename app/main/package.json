@@ -12,6 +12,7 @@
     "@vicons/fluent": "^0.12.0",
     "@visual/components": "workspace:*",
     "@visual/shared": "workspace:*",
+    "lodash": "^4.17.21",
     "naive-ui": "^2.30.8",
     "nanoid": "^4.0.0",
     "normalize.css": "^8.0.1",
@@ -21,6 +22,7 @@
     "vuedraggable": "^4.1.0"
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.182",
     "@typescript-eslint/eslint-plugin": "^5.30.0",
     "@typescript-eslint/parser": "^5.30.0",
     "@vitejs/plugin-vue": "^2.3.3",

@@ -1,5 +1,9 @@
-import { defineComponent, computed, PropType } from 'vue'
-import { ComEditorPropType, ComEditorWidgetType } from '@visual/components'
+import { defineComponent, computed, PropType, reactive, watch } from 'vue'
+import {
+  ComEditorPropsValueType,
+  ComEditorPropType,
+  ComEditorWidgetType
+} from '@visual/components'
 import {
   FormItemRule,
   FormRules,
@@ -9,6 +13,12 @@ import {
   NSelect,
   NSwitch
 } from 'naive-ui'
+import { validateField } from '@/shared'
+
+type FormDataItem = Omit<ComEditorPropsValueType, 'type'> & {
+  key: string
+  rule: FormRules
+}
 
 const props = {
   data: {
@@ -17,76 +27,90 @@ const props = {
   }
 } as const
 
-function dispathWidgets(type: ComEditorWidgetType) {
-  switch (type) {
-    case ComEditorWidgetType.INPUT:
-      return NInput
-    case ComEditorWidgetType.COLOR:
-      return NInput // 颜色 暂时写成input
-    case ComEditorWidgetType.INPUTNUMBER:
-      return NInputNumber
-    case ComEditorWidgetType.SELECT:
-      return NSelect
-    case ComEditorWidgetType.SWITCH:
-      return NSwitch
-    default:
-      return null
-  }
-}
-
-function showWidgetsBytype(type: ComEditorWidgetType) {
-  const Component = dispathWidgets(type)
-  return Component ? <Component /> : null
-}
-
 export default defineComponent({
   name: 'PropForm',
   props,
-  setup(props) {
+  emits: ['update:data'],
+  setup(props, { emit }) {
+    function dispathWidgets(type: ComEditorWidgetType, item: FormDataItem) {
+      const data = props.data[item.key]
+      // const data = item
+      switch (type) {
+        case ComEditorWidgetType.INPUT:
+          return <NInput v-model={[data.defaultValue, 'value']} />
+        case ComEditorWidgetType.COLOR:
+          return <NInput v-model={[data.defaultValue, 'value']} /> // 颜色 暂时写成input
+        case ComEditorWidgetType.INPUTNUMBER:
+          return <NInputNumber v-model={[data.defaultValue, 'value']} />
+        case ComEditorWidgetType.SELECT:
+          return (
+            <NSelect
+              options={item.options}
+              v-model={[data.defaultValue, 'value']}
+            />
+          )
+        case ComEditorWidgetType.SWITCH:
+          return <NSwitch v-model={[data.defaultValue, 'value']} />
+        default:
+          return null
+      }
+    }
     const formData = computed(() => {
       const data = props.data
-      return Object.keys(data).map(key => {
-        const rule: FormRules = {
-          [key]: [
-            {
-              trigger: ['input', 'blur'],
-              validator(rule: FormItemRule, value: string) {
-                const type = data[key].type
-                if (type === Number) {
-                  if (isNaN(Number(value))) {
-                    return new Error('该字段类型是数字')
+      return reactive(
+        Object.keys(data).map(key => {
+          const rule: FormRules = {
+            [key]: [
+              {
+                trigger: ['input', 'blur'],
+                validator(rule: FormItemRule, value: string) {
+                  const type = data[key].type
+                  if (!validateField(value, type)) {
+                    if (type === Number) return new Error('该字段类型是数字')
+                    if (type === String) return new Error('该字段类型是字符串')
+                    if (type === Boolean)
+                      return new Error('该字段类型是布尔类型')
                   }
-                } else if (type === String) {
-                  if (String(value) !== value) {
-                    return new Error('该字段类型是字符串')
-                  }
-                } else if (type === Boolean) {
-                  if (isNaN(Number(value))) {
-                    return new Error('该字段类型是布尔类型')
-                  }
+                  return true
                 }
-                return true
               }
-            }
-          ]
-        }
+            ]
+          }
 
-        return {
-          defaultValue: data[key].defaultValue,
-          widgetType: data[key].widgetType,
-          options: data[key].options,
-          alias: data[key].alias,
-          key,
-          rule
-        }
-      })
+          return {
+            defaultValue: data[key].defaultValue,
+            widgetType: data[key].widgetType,
+            options: data[key].options,
+            alias: data[key].alias,
+            key,
+            rule
+          }
+        })
+      )
     })
+
+    watch(
+      formData,
+      v => {
+        console.log(v, 'change')
+        emit('update:data', v)
+      },
+      { deep: true }
+    )
     return () => {
-      return formData.value.map(formItem => (
-        <NFormItem label={formItem.alias} rule={formItem.rule}>
-          {showWidgetsBytype(formItem.widgetType)}
-        </NFormItem>
-      ))
+      return (
+        <div style={{ padding: '12px' }}>
+          {formData.value.map(formItem => (
+            <NFormItem
+              key={formItem.key}
+              label={formItem.alias}
+              rule={formItem.rule}
+            >
+              {dispathWidgets(formItem.widgetType, formItem)}
+            </NFormItem>
+          ))}
+        </div>
+      )
     }
   }
 })

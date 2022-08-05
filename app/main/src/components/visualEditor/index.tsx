@@ -6,11 +6,11 @@ import {
   TransitionGroup,
   watch,
   Teleport,
-  nextTick
+  watchEffect
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
-import { BlockType, OmitComponentType } from '@/shared'
+import { BlockType, OmitComponentType, validateField } from '@/shared'
 import BlockRender from './BlockRender'
 import VueDraggable from 'vuedraggable'
 import { draggableGroupName } from '@/config'
@@ -20,7 +20,7 @@ import { useSelectedStatus } from '@/hooks'
 import styles from './css/VisualEditor.module.scss'
 import { useGuideDrag } from './hooks/useGuideDrag'
 import { NDropdown } from 'naive-ui'
-import { MaybeArray } from 'naive-ui/es/_utils'
+import { useContextMenu } from './hooks/useContextMenu'
 
 type BlockRenderType = InstanceType<typeof BlockRender> | null
 
@@ -36,21 +36,31 @@ export default defineComponent({
   setup() {
     const store = useVisualStore()
 
-    const { visualEditorData, editorDragType } = storeToRefs(store)
+    const { visualEditorData, editorDragType, selectedComInfo } =
+      storeToRefs(store)
 
     const drag = ref(false)
 
-    const xRef = ref(0)
+    const innerCurPageComponets = shallowRef<BlockType[]>([])
 
-    const yRef = ref(0)
+    const selectedComKey = computed(() => selectedComInfo.value?.key)
 
-    const showDropdownRef = ref(false)
+    const selectedComProps = computed(() =>
+      Object.keys(selectedComInfo.value?.editorProps || {}).reduce(
+        (cur, next) => {
+          const defaultValue =
+            selectedComInfo.value?.editorProps[next].defaultValue
+          const type = selectedComInfo.value?.editorProps[next].type
+          cur[next] = validateField(type(defaultValue), type)
+          return cur
+        },
+        {} as Record<string, any>
+      )
+    )
 
     const mainPageStyle = computed(
       () => visualEditorData.value.pageConfig?.style
     )
-
-    const innerCurPageComponets = shallowRef<BlockType[]>([])
 
     const editorDisableDrag = computed(() => editorDragType.value === 'nested')
 
@@ -62,8 +72,27 @@ export default defineComponent({
     const { blockRefs, showGuidTips, selectedBlockRefClientRect } =
       useGuideDrag(editorDisableDrag)
 
+    // 右键菜单
+    const {
+      xRef,
+      yRef,
+      handleContextMenu,
+      handleSelectContextOption,
+      showDropdownRef
+    } = useContextMenu(
+      editorDisableDrag,
+      innerCurPageComponets,
+      selectedBlockKey
+    )
+
     watch(innerCurPageComponets, v => {
       store.setCurPageBlock(v)
+    })
+
+    watchEffect(() => {
+      if (!editorDisableDrag.value) {
+        store.setSelectedComInfo(undefined)
+      }
     })
 
     const dragOptions = computed(() => ({
@@ -79,10 +108,6 @@ export default defineComponent({
         disabled: !(key === selectedBlockKey.value && editorDisableDrag.value),
         ghostClass: 'ghost-editor'
       }))
-    }
-
-    function handleChange(evt: any) {
-      console.log('change-clone', evt)
     }
 
     function handleStartAndEndEvent(type: 'start' | 'end') {
@@ -114,29 +139,17 @@ export default defineComponent({
       return selectedBlockKey.value === key
     }
 
-    function handleContextMenu(e: MouseEvent, show: boolean) {
-      if (show) {
-        e.preventDefault()
-        showDropdownRef.value = false
-        nextTick().then(() => {
-          showDropdownRef.value = true
-          xRef.value = e.clientX
-          yRef.value = e.clientY
-        })
+    function selectedCurComponent(info: OmitComponentType) {
+      if (info.key !== selectedComKey.value) {
+        store.setSelectedComInfo(info)
       }
     }
 
-    function handleSelectContextOption(v: MaybeArray<string>) {
-      if (typeof v === 'string') {
-        // 删除 block
-        if (!editorDisableDrag.value) {
-          innerCurPageComponets.value = innerCurPageComponets.value.filter(
-            item => item.key !== selectedBlockKey.value
-          )
-          console.log(innerCurPageComponets.value)
-        }
+    function withDisable(fn: (...args: any[]) => any) {
+      console.log(editorDisableDrag.value)
+      if (editorDisableDrag.value) {
+        fn()
       }
-      showDropdownRef.value = false
     }
 
     // 有一个 递归 render 组件问题，在vite热更新的时候
@@ -168,7 +181,6 @@ export default defineComponent({
             v-model={innerCurPageComponets.value}
             itemKey="key"
             group={draggableGroupName}
-            onChange={handleChange}
             onStart={() => handleStartAndEndEvent('start')}
             onEnd={() => handleStartAndEndEvent('end')}
             move={handleMove}
@@ -212,12 +224,32 @@ export default defineComponent({
                           }: {
                             element: OmitComponentType
                           }) => {
+                            // 嵌套拖拽
                             return (
-                              <Com
-                                oncontextmenu={(e: MouseEvent) =>
-                                  handleContextMenu(e, editorDisableDrag.value)
+                              <div
+                                onClick={() =>
+                                  withDisable(() => selectedCurComponent(Com))
                                 }
-                              />
+                                class={[
+                                  styles.comWrapper,
+                                  {
+                                    [`${styles.comWrapperSelected}`]:
+                                      selectedComKey.value === Com.key
+                                  }
+                                ]}
+                              >
+                                <Com
+                                  oncontextmenu={(e: MouseEvent) =>
+                                    handleContextMenu(
+                                      e,
+                                      editorDisableDrag.value
+                                    )
+                                  }
+                                  {...(selectedComKey.value === Com.key
+                                    ? selectedComProps.value
+                                    : {})}
+                                />
+                              </div>
                             )
                           }
                         }}

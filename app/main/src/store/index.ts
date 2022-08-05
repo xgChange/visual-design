@@ -30,6 +30,8 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
 
   const curPageBlocks = computed(() => curPageInfo.value?.blocks)
 
+  const selectedComInfo = ref<OmitComponentType>()
+
   // 为当前 page 的 block 增加 com
   function addCurPageComponentByBlock(
     com: OmitComponentType,
@@ -75,15 +77,21 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
     editorDragType.value = type
   }
 
+  function setSelectedComInfo(info: OmitComponentType | undefined) {
+    selectedComInfo.value = info
+  }
+
   return {
     visualEditorData,
     curPageInfo,
     selectPath,
     curPageBlocks,
     editorDragType,
+    selectedComInfo,
     addCurPageComponentByBlock,
     setCurPageBlock,
-    setEditorDragType
+    setEditorDragType,
+    setSelectedComInfo
   }
 })
 

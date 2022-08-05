@@ -8,6 +8,7 @@ import {
 } from 'vue'
 import { VComponentAll, VComponentType } from '@visual/components'
 import VueDraggable from 'vuedraggable'
+import { cloneDeep } from 'lodash'
 
 import { createArray, generateNanoId, ObjectKeyType } from '@/shared'
 import {
@@ -70,13 +71,19 @@ export default defineComponent({
 
     function createBlock(original: VComponentType) {
       if (isNestedDrag.value) {
-        const result = Object.assign({ key: generateNanoId() }, { ...original })
+        const result = Object.assign(cloneDeep(original), {
+          key: generateNanoId()
+        })
         console.log('clone', result)
         return result
       }
       const block = {
         key: generateNanoId(),
-        coms: shallowRef(createArray([{ ...original, key: generateNanoId() }])) // 重新解构 component 使其失去响应式
+        coms: shallowRef(
+          createArray([
+            Object.assign(cloneDeep(original), { key: generateNanoId() })
+          ])
+        ) // 重新解构 component 使其失去响应式
       } as BlockType
       console.log('clone', block)
       return block
