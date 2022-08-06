@@ -43,7 +43,14 @@ export default defineComponent({
 
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
-    const selectedComKey = computed(() => selectedComInfo.value?.key)
+    const selectedComKey = computed(() => selectedComInfo.value?.key as string)
+
+    const curPageBlock = computed(
+      () =>
+        curPageBlocks.value?.find(
+          item => item.key === selectedBlockKey.value
+        ) as BlockType | undefined
+    )
 
     // 这里收集了当前页面上的组件props
     const curComProps = computed(() => {
@@ -91,7 +98,9 @@ export default defineComponent({
     } = useContextMenu(
       editorDisableDrag,
       innerCurPageComponets,
-      selectedBlockKey
+      selectedBlockKey,
+      selectedComKey,
+      curPageBlock
     )
 
     watch(innerCurPageComponets, v => {
@@ -146,6 +155,10 @@ export default defineComponent({
 
     function isSelectedCurBlock(key: string) {
       return selectedBlockKey.value === key
+    }
+
+    function isSelectedCurCom(key: string) {
+      return selectedComKey.value === key
     }
 
     function selectedCurComponent(info: OmitComponentType) {
@@ -210,18 +223,19 @@ export default defineComponent({
                       selected={isSelectedCurBlock(element.key!)}
                       onClick={() => handleClick(element.key!)}
                       onInsert={type => handleInsertCom(type)}
-                      oncontextmenu={(e: MouseEvent) =>
-                        handleContextMenu(
+                      oncontextmenu={(e: MouseEvent) => {
+                        return handleContextMenu(
                           e,
                           !editorDisableDrag.value &&
                             isSelectedCurBlock(element.key!)
                         )
-                      }
+                      }}
                       ref={ref => {
                         blockRefs.value.add(ref as BlockRenderType)
                       }}
                     >
                       <VueDraggable
+                        class={styles.visualDragComs}
                         v-model={element.coms!.value}
                         itemKey="key"
                         group={draggableGroupName}
@@ -242,6 +256,13 @@ export default defineComponent({
                                     element.key!
                                   )
                                 }
+                                oncontextmenu={(e: MouseEvent) => {
+                                  return handleContextMenu(
+                                    e,
+                                    editorDisableDrag.value &&
+                                      isSelectedCurCom(Com.key! as string)
+                                  )
+                                }}
                                 class={[
                                   styles.comWrapper,
                                   {
@@ -251,12 +272,6 @@ export default defineComponent({
                                 ]}
                               >
                                 <Com
-                                  oncontextmenu={(e: MouseEvent) =>
-                                    handleContextMenu(
-                                      e,
-                                      editorDisableDrag.value
-                                    )
-                                  }
                                   {...(curComProps.value[Com.key as string] ||
                                     {})}
                                 />

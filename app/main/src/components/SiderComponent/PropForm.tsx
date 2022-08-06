@@ -7,6 +7,7 @@ import {
 import {
   FormItemRule,
   FormRules,
+  NColorPicker,
   NFormItem,
   NInput,
   NInputNumber,
@@ -37,7 +38,13 @@ export default defineComponent({
         case ComEditorWidgetType.INPUT:
           return <NInput v-model={[data.defaultValue, 'value']} />
         case ComEditorWidgetType.COLOR:
-          return <NInput v-model={[data.defaultValue, 'value']} /> // 颜色 暂时写成input
+          return (
+            <NColorPicker
+              size="large"
+              modes={['hex']}
+              v-model={[data.defaultValue, 'value']}
+            />
+          ) // 颜色 暂时写成input
         case ComEditorWidgetType.INPUTNUMBER:
           return <NInputNumber v-model={[data.defaultValue, 'value']} />
         case ComEditorWidgetType.SELECT:

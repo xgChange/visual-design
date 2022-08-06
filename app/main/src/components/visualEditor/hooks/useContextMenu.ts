@@ -1,11 +1,13 @@
-import { ref, Ref, nextTick, ShallowRef } from 'vue'
+import { ref, Ref, nextTick, ShallowRef, shallowRef } from 'vue'
 import { MaybeArray } from 'naive-ui/es/_utils'
 import { BlockType } from '@/shared'
 
 export function useContextMenu(
   editorDisableDrag: Ref<boolean>,
   innerCurPageComponets: ShallowRef<BlockType[]>,
-  selectedBlockKey: Ref<string>
+  selectedBlockKey: Ref<string>,
+  selectedComKey: Ref<string>,
+  curPageBlock: Ref<BlockType | undefined>
 ) {
   const xRef = ref(0)
 
@@ -33,6 +35,18 @@ export function useContextMenu(
           item => item.key !== selectedBlockKey.value
         )
         console.log(innerCurPageComponets.value)
+      }
+
+      // 删除 Com
+      if (editorDisableDrag.value) {
+        if (curPageBlock.value && curPageBlock.value.coms) {
+          curPageBlock.value.coms = shallowRef(
+            curPageBlock.value?.coms?.value?.filter(
+              item => item.key !== selectedComKey.value
+            ) || []
+          )
+          console.log('after delete com: ', curPageBlock.value.coms)
+        }
       }
     }
     showDropdownRef.value = false
