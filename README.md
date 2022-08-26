@@ -216,3 +216,34 @@ watch(arr, (v, oldv) => {
       最后触发 trigger 流程，effect 里面触发自定义的 scheduler -> 因为 deep 为 true 所以会触发 watch 的 callback()
 
     - 而为什么 deep = false 时不能触发 callback 呢？因为 没有收集到 length 的依赖，而 length 的依赖在 traverse 函数中访问到了。
+
+3.  在组件模板、render 中用时也能监听的变化是为什么？
+
+```typescript
+const MyCom = {
+  template: `<div>{{arr}}</div>`,
+  setup() {
+    const arr = reactive([0])
+
+    setTimeout(() => {
+      arr.push(1)
+    }, 2000)
+
+    effect(() => {
+      console.log('不变', arr)
+    })
+
+    effect(() => {
+      console.log('变化', arr.toString())
+    })
+
+    return {
+      arr
+    }
+  }
+}
+
+// 例如直接在模板中使用 arr，其实是调用了arr.toString()，而toString方法会调用 length，这样就会收集length的dep依赖，然后在push时候，会改变length，从而触发setter，触发trigger，会收集数组中每一项的dep，然后循环 effect.run
+
+// render中使用同上述在effect中使用
+```

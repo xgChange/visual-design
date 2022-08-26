@@ -26,8 +26,6 @@ export const VButtonProps = { ...props } as any
 
 const allProps = { ...props, ...Button.props }
 
-console.log(allProps)
-
 const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
   label: createEditorPropsFactory(allProps.label, '按钮内容')(
     props.label.default,
@@ -49,7 +47,10 @@ const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
       item => ({ label: item, value: item })
     )
   ),
-  color: createEditorPropsFactory(allProps.color, '按钮颜色')('', ComEditorWidgetType.COLOR)
+  color: createEditorPropsFactory(allProps.color, '按钮颜色')(
+    '',
+    ComEditorWidgetType.COLOR
+  )
 }
 const VButton = defineComponent<Partial<VButtonPropsType>>({
   name: 'Button',
