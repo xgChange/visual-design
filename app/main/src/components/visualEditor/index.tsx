@@ -6,11 +6,12 @@ import {
   TransitionGroup,
   watch,
   Teleport,
-  watchEffect
+  watchEffect,
+  StyleValue
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
-import { BlockType, OmitComponentType, validateField } from '@/shared'
+import { BlockType, Data, OmitComponentType, validateField } from '@/shared'
 import BlockRender from './BlockRender'
 import VueDraggable from 'vuedraggable'
 import { draggableGroupName } from '@/config'
@@ -36,7 +37,7 @@ export default defineComponent({
   setup() {
     const store = useVisualStore()
 
-    const { visualEditorData, editorDragType, selectedComInfo, curPageBlocks } =
+    const { editorDragType, selectedComInfo, curPageBlocks, visualPageConfig } =
       storeToRefs(store)
 
     const drag = ref(false)
@@ -74,9 +75,16 @@ export default defineComponent({
       }, {} as Record<string, any>)
     })
 
-    const mainPageStyle = computed(
-      () => visualEditorData.value.pageConfig?.style
-    )
+    const mainPageStyle = computed(() => {
+      const style = visualPageConfig.value?.style || {}
+      if (visualPageConfig.value) {
+        return Object.keys(style).reduce((cur, next) => {
+          cur[next] = style[next].defaultValue
+          return cur
+        }, {} as Data) as StyleValue
+      }
+      return {} as StyleValue
+    })
 
     const editorDisableDrag = computed(() => editorDragType.value === 'nested')
 

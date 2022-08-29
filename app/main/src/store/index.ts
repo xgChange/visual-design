@@ -5,13 +5,21 @@ import { BlockType, generateNanoId, OmitComponentType } from '@/shared'
 import { VisualEditorType, createArray } from '@/shared'
 import { useState } from '@/hooks/useState'
 
+import {
+  createEditorPropsFactory,
+  ComEditorWidgetType
+} from '@visual/components'
+
 type DragType = 'default' | 'nested'
 
 export const useVisualStore = defineStore('visualEditorConfig', () => {
   const visualEditorData = reactive<Partial<VisualEditorType>>({
     pageConfig: {
       style: {
-        'background-color': '#fff'
+        'background-color': createEditorPropsFactory({}, '背景颜色')(
+          '#fff',
+          ComEditorWidgetType.COLOR
+        )
       }
     },
     page: {
@@ -22,6 +30,8 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
       }
     }
   })
+
+  console.log('asd', visualEditorData)
 
   const selectPath = ref('/') // 当前 设置(选择)的路由
 
@@ -34,6 +44,8 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
   const curPageInfo = computed(() => visualEditorData?.page?.[selectPath.value])
 
   const curPageBlocks = computed(() => curPageInfo.value?.blocks)
+
+  const visualPageConfig = computed(() => visualEditorData.pageConfig)
 
   // 为当前 page 的 block 增加 com
   function addCurPageComponentByBlock(
@@ -78,6 +90,7 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
 
   return {
     visualEditorData,
+    visualPageConfig,
     curPageInfo,
     selectPath,
     curPageBlocks,

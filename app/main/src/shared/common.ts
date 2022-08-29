@@ -7,6 +7,8 @@ export const generateNanoId = customAlphabet('1234567890abcdef', 10)
 
 export const NOOP = () => {}
 
+export type Data = Record<string, unknown>
+
 // 校验字段，并重新赋值
 export const validateField = (
   value: string,

@@ -4,7 +4,7 @@ import { VComponentType } from '@visual/components'
 import { ShallowRef } from 'vue'
 
 interface PageConfig {
-  style: Record<string, string>
+  style: Record<string, any>
 }
 
 interface Component {

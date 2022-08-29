@@ -12,9 +12,13 @@ export default defineComponent({
   setup() {
     const store = useVisualStore()
 
-    const { selectedComInfo } = storeToRefs(store)
+    const { selectedComInfo, visualPageConfig } = storeToRefs(store)
 
     const props = computed(() => selectedComInfo.value?.editorProps || {})
+
+    const pageSettingStyle = computed(() => {
+      return visualPageConfig.value?.style || ({} as any)
+    })
     return () => {
       return (
         <NTabs
@@ -34,7 +38,7 @@ export default defineComponent({
             tab="页面设置"
             class={styles.tabItemWrapper}
           >
-            页面设置
+            <PropForm data={pageSettingStyle.value} />
           </NTabPane>
         </NTabs>
       )
