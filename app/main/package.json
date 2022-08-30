@@ -13,7 +13,7 @@
     "@visual/components": "workspace:*",
     "@visual/shared": "workspace:*",
     "lodash": "^4.17.21",
-    "naive-ui": "^2.30.8",
+    "naive-ui": "^2.33.1",
     "nanoid": "^4.0.0",
     "normalize.css": "^8.0.1",
     "pinia": "^2.0.15",

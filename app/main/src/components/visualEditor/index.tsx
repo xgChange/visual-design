@@ -53,26 +53,45 @@ export default defineComponent({
         ) as BlockType | undefined
     )
 
+    /**
+     * @description 格式化props
+     */
+    function formatComProps(props: Data<any>) {
+      return Object.keys(props).reduce((obj, prop) => {
+        // 这里做了一个 响应式依赖，selectedComInfo，在render时候会响应 selectedComInfo收集的依赖，从而从新执行这个computed
+        const defaultValue = props[prop].defaultValue
+        const type = props[prop].type
+        const unit = props[prop].unit
+        const fieldResult = validateField(type(defaultValue), type)
+        // 判断是否有 单位，例如 px、vw 等
+        obj[prop] = unit ? `${fieldResult}${unit}` : fieldResult
+        return obj
+      }, {} as Data<string | boolean | number | undefined>)
+    }
+
     // 这里收集了当前页面上的组件props
     const curComProps = computed(() => {
       const pageComs = curPageBlocks.value?.map(item => item.coms).flat() || []
-      // 序列化 com props
-      return pageComs.reduce((cur, next) => {
-        cur[next!.key as string] = Object.keys(next?.editorProps || {}).reduce(
-          (obj, prop) => {
-            // 这里做了一个 响应式依赖，selectedComInfo，在render时候会响应 selectedComInfo收集的依赖，从而从新执行这个computed
-            const curRealEditorProps =
-              selectedComKey.value === next?.key ? selectedComInfo.value : next
-            const defaultValue =
-              curRealEditorProps?.editorProps[prop].defaultValue
-            const type = curRealEditorProps?.editorProps[prop].type
-            obj[prop] = validateField(type(defaultValue), type)
-            return obj
-          },
-          {} as Record<string, string | boolean | number | undefined>
-        )
-        return cur
-      }, {} as Record<string, any>)
+      // 序列化 com props、styles
+      return pageComs.reduce(
+        (cur, next) => {
+          const curRealEditorProps =
+            (selectedComKey.value === next?.key ? selectedComInfo.value : next)
+              ?.editorProps || {}
+
+          const curRealEditorStyles =
+            (selectedComKey.value === next?.key ? selectedComInfo.value : next)
+              ?.editorStyles || {}
+
+          cur.props[next!.key as string] = formatComProps(curRealEditorProps)
+          cur.styles[next!.key as string] = formatComProps(curRealEditorStyles)
+          return cur
+        },
+        {
+          props: {},
+          styles: {}
+        } as Record<'props' | 'styles', Data<any>>
+      )
     })
 
     const mainPageStyle = computed(() => {
@@ -111,6 +130,7 @@ export default defineComponent({
       curPageBlock
     )
 
+    // 拖拽后的数据 同步到 pinia
     watch(innerCurPageComponets, v => {
       store.setCurPageBlock(v)
     })
@@ -280,8 +300,12 @@ export default defineComponent({
                                 ]}
                               >
                                 <Com
-                                  {...(curComProps.value[Com.key as string] ||
-                                    {})}
+                                  {...(curComProps.value.props[
+                                    Com.key as string
+                                  ] || {})}
+                                  style={
+                                    curComProps.value.styles[Com.key as string]
+                                  }
                                 />
                               </div>
                             )

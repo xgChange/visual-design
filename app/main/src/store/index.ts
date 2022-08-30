@@ -16,7 +16,7 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
   const visualEditorData = reactive<Partial<VisualEditorType>>({
     pageConfig: {
       style: {
-        'background-color': createEditorPropsFactory({}, '背景颜色')(
+        backgroundColor: createEditorPropsFactory({}, '背景颜色')(
           '#fff',
           ComEditorWidgetType.COLOR
         )
@@ -30,8 +30,6 @@ export const useVisualStore = defineStore('visualEditorConfig', () => {
       }
     }
   })
-
-  console.log('asd', visualEditorData)
 
   const selectPath = ref('/') // 当前 设置(选择)的路由
 

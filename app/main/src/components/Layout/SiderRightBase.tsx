@@ -14,8 +14,12 @@ export default defineComponent({
 
     const { selectedComInfo, visualPageConfig } = storeToRefs(store)
 
+    // 组件的 props
     const props = computed(() => selectedComInfo.value?.editorProps || {})
 
+    const styleProps = computed(() => selectedComInfo.value?.editorStyles || {})
+
+    // 页面的 设置
     const pageSettingStyle = computed(() => {
       return visualPageConfig.value?.style || ({} as any)
     })
@@ -29,6 +33,7 @@ export default defineComponent({
         >
           <NTabPane name="props" tab="属性" class={styles.tabItemWrapper}>
             <PropForm data={props.value} />
+            <PropForm data={styleProps.value} />
           </NTabPane>
           <NTabPane name="event" tab="事件" class={styles.tabItemWrapper}>
             事件

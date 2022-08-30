@@ -8,7 +8,8 @@ export type Valueof<T> = T[keyof T]
 
 export function createEditorPropsFactory<T>(
   prop: T,
-  alias: string
+  alias: string,
+  unit?: string
 ) {
   let realType: T | NativeConstructorType = String
   if (!(prop as any).type) {
@@ -23,6 +24,7 @@ export function createEditorPropsFactory<T>(
     const result = {
       type: realType,
       alias,
+      unit, // 单位
       defaultValue: args[0],
       widgetType: args[1],
       options: args[2]

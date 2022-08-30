@@ -42,7 +42,13 @@ export default defineComponent({
             <NColorPicker
               size="large"
               modes={['hex']}
+              showAlpha={false}
+              actions={['confirm']}
               v-model={[data.defaultValue, 'value']}
+              renderLabel={() => `请选择${item.alias}`}
+              onConfirm={value => {
+                console.log(value)
+              }}
             />
           ) // 颜色 暂时写成input
         case ComEditorWidgetType.INPUTNUMBER:

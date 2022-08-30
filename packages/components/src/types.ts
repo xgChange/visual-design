@@ -28,7 +28,7 @@ export type SelectOptionItemType = { label: string; value: string }
 export interface ComEditorPropsValueType {
   type: NativeConstructorType | NativeConstructorType[] // prop 的类型
   widgetType: ComEditorWidgetType
-  defaultValue: string
+  defaultValue: string | number
   alias: string
   options?: SelectOptionItemType[]
 }

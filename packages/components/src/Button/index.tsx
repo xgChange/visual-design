@@ -1,4 +1,4 @@
-import { defineComponent, PropType, ExtractPropTypes } from 'vue'
+import { defineComponent, PropType, ExtractPropTypes, StyleValue } from 'vue'
 import {
   SlotEventType,
   ExtendedProperty,
@@ -52,6 +52,18 @@ const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
     ComEditorWidgetType.COLOR
   )
 }
+
+const editorStyles: Partial<ComEditorPropType<StyleValue>> = {
+  width: createEditorPropsFactory({ type: Number }, '宽度', 'px')(
+    60,
+    ComEditorWidgetType.INPUTNUMBER
+  ),
+  height: createEditorPropsFactory({ type: Number }, '高度', 'px')(
+    44,
+    ComEditorWidgetType.INPUTNUMBER
+  )
+}
+
 const VButton = defineComponent<Partial<VButtonPropsType>>({
   name: 'Button',
   props: VButtonProps,
@@ -91,7 +103,8 @@ const VButton = defineComponent<Partial<VButtonPropsType>>({
       alias: '点击事件'
     }
   ] as SlotEventType[],
-  editorProps
+  editorProps,
+  editorStyles
 })
 
 type VButtonType = typeof VButton & ExtendedProperty
