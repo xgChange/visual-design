@@ -1,3 +1,5 @@
+import { StyleValue } from 'vue'
+
 export interface SlotEventType {
   type: string
   alias: string
@@ -15,7 +17,8 @@ export const enum ComEditorWidgetType {
   INPUTNUMBER = 'inputNumber',
   COLOR = 'color',
   SELECT = 'select',
-  SWITCH = 'switch'
+  SWITCH = 'switch',
+  CONTROLLINPUT = 'controllInput'
 }
 
 export type NativeConstructorType =
@@ -28,7 +31,7 @@ export type SelectOptionItemType = { label: string; value: string }
 export interface ComEditorPropsValueType {
   type: NativeConstructorType | NativeConstructorType[] // prop 的类型
   widgetType: ComEditorWidgetType
-  defaultValue: string | number
+  defaultValue: string | number | Record<string, any>
   alias: string
   options?: SelectOptionItemType[]
 }
@@ -36,3 +39,14 @@ export interface ComEditorPropsValueType {
 export type ComEditorPropType<T> = {
   [k in keyof T]: ComEditorPropsValueType
 }
+
+export type StyleValueGroup = {
+  positionGroup: {
+    top: number
+    left: number
+    right: number
+    bottom: number
+  }
+}
+
+export const styleValueGroup = 'positionGroup'

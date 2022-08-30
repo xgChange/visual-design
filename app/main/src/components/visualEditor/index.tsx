@@ -11,7 +11,13 @@ import {
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
-import { BlockType, Data, OmitComponentType, validateField } from '@/shared'
+import {
+  BlockType,
+  Data,
+  OmitComponentType,
+  validateField,
+  PropValueType
+} from '@/shared'
 import BlockRender from './BlockRender'
 import VueDraggable from 'vuedraggable'
 import { draggableGroupName } from '@/config'
@@ -22,6 +28,14 @@ import styles from './css/VisualEditor.module.scss'
 import { useGuideDrag } from './hooks/useGuideDrag'
 import { NDropdown } from 'naive-ui'
 import { useContextMenu } from './hooks/useContextMenu'
+import {
+  coverComStyleByEdit,
+  formatComStyle,
+  getComStyle,
+  getOuterBoxStyle,
+  handleStyleObject,
+  preComStyle
+} from './style'
 
 type BlockRenderType = InstanceType<typeof BlockRender> | null
 
@@ -56,24 +70,27 @@ export default defineComponent({
     /**
      * @description 格式化props
      */
-    function formatComProps(props: Data<any>) {
+    function formatComProps(props: Data<any>, option?: 'style') {
       return Object.keys(props).reduce((obj, prop) => {
         // 这里做了一个 响应式依赖，selectedComInfo，在render时候会响应 selectedComInfo收集的依赖，从而从新执行这个computed
         const defaultValue = props[prop].defaultValue
         const type = props[prop].type
-        const unit = props[prop].unit
         const fieldResult = validateField(type(defaultValue), type)
-        // 判断是否有 单位，例如 px、vw 等
-        obj[prop] = unit ? `${fieldResult}${unit}` : fieldResult
+        // 处理 style 的情况
+        if (option == 'style') {
+          obj[prop] = formatComStyle(props[prop], prop, fieldResult)
+        } else {
+          obj[prop] = fieldResult
+        }
         return obj
-      }, {} as Data<string | boolean | number | undefined>)
+      }, {} as Data<PropValueType>)
     }
 
     // 这里收集了当前页面上的组件props
     const curComProps = computed(() => {
       const pageComs = curPageBlocks.value?.map(item => item.coms).flat() || []
       // 序列化 com props、styles
-      return pageComs.reduce(
+      const result = pageComs.reduce(
         (cur, next) => {
           const curRealEditorProps =
             (selectedComKey.value === next?.key ? selectedComInfo.value : next)
@@ -84,7 +101,12 @@ export default defineComponent({
               ?.editorStyles || {}
 
           cur.props[next!.key as string] = formatComProps(curRealEditorProps)
-          cur.styles[next!.key as string] = formatComProps(curRealEditorStyles)
+          cur.styles[next!.key as string] = handleStyleObject(
+            Object.assign(
+              formatComProps(curRealEditorStyles, 'style'),
+              preComStyle
+            )
+          )
           return cur
         },
         {
@@ -92,6 +114,8 @@ export default defineComponent({
           styles: {}
         } as Record<'props' | 'styles', Data<any>>
       )
+      // handleStyleObject(result.styles)
+      return result
     })
 
     const mainPageStyle = computed(() => {
@@ -204,6 +228,7 @@ export default defineComponent({
 
     // 有一个 递归 render 组件问题，在vite热更新的时候
     return () => {
+      console.log(curComProps.value)
       return (
         <div style={mainPageStyle.value} class={styles.visualEditor}>
           {showGuidTips.value && (
@@ -298,14 +323,17 @@ export default defineComponent({
                                       selectedComKey.value === Com.key
                                   }
                                 ]}
+                                style={getOuterBoxStyle(
+                                  curComProps.value.styles[Com.key as string]
+                                )}
                               >
                                 <Com
                                   {...(curComProps.value.props[
                                     Com.key as string
                                   ] || {})}
-                                  style={
+                                  style={getComStyle(
                                     curComProps.value.styles[Com.key as string]
-                                  }
+                                  )}
                                 />
                               </div>
                             )

@@ -9,6 +9,13 @@ export const NOOP = () => {}
 
 export type Data<T = unknown> = Record<string, T>
 
+export type PropValueType =
+  | number
+  | string
+  | boolean
+  | undefined
+  | Record<any, any>
+
 // 校验字段，并重新赋值
 export const validateField = (
   value: string,
@@ -31,6 +38,5 @@ export const validateField = (
       return undefined
     }
   }
-
   return realRule(value)
 }

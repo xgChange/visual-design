@@ -3,7 +3,8 @@ import {
   SlotEventType,
   ExtendedProperty,
   ComEditorPropType,
-  ComEditorWidgetType
+  ComEditorWidgetType,
+  StyleValueGroup
 } from '../types'
 
 import Button, { ButtonProps, ButtonType } from 'vant/es/button/index'
@@ -53,14 +54,20 @@ const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
   )
 }
 
-const editorStyles: Partial<ComEditorPropType<StyleValue>> = {
-  width: createEditorPropsFactory({ type: Number }, '宽度', 'px')(
-    60,
-    ComEditorWidgetType.INPUTNUMBER
-  ),
-  height: createEditorPropsFactory({ type: Number }, '高度', 'px')(
-    44,
-    ComEditorWidgetType.INPUTNUMBER
+const editorStyles: Partial<ComEditorPropType<StyleValue | StyleValueGroup>> = {
+  width: createEditorPropsFactory(
+    { type: Number },
+    '宽度',
+    'px'
+  )(60, ComEditorWidgetType.INPUTNUMBER),
+  height: createEditorPropsFactory(
+    { type: Number },
+    '高度',
+    'px'
+  )(44, ComEditorWidgetType.INPUTNUMBER),
+  positionGroup: createEditorPropsFactory({ type: Object }, '位置', 'px')(
+    undefined,
+    ComEditorWidgetType.CONTROLLINPUT
   )
 }
 

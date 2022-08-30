@@ -1,0 +1,21 @@
+.position-controller-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  grid-gap: 10px;
+
+  .top {
+    grid-column-start: 2;
+  }
+
+  .left {
+    grid-column-start: 1;
+  }
+
+  .right {
+    grid-column-start: 3;
+  }
+
+  .bottom {
+    grid-column-start: 2;
+  }
+}

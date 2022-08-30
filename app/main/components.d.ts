@@ -12,6 +12,7 @@ declare module '@vue/runtime-core' {
     NForm: typeof import('naive-ui')['NForm']
     NIcon: typeof import('naive-ui')['NIcon']
     NLayout: typeof import('naive-ui')['NLayout']
+    PositionController: typeof import('./src/components/Base/PositionController.vue')['default']
     PropForm: typeof import('./src/components/SiderComponent/PropForm.vue')['default']
     PropList: typeof import('./src/components/Base/PropList.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']

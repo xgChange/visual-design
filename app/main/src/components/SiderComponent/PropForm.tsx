@@ -14,7 +14,9 @@ import {
   NSelect,
   NSwitch
 } from 'naive-ui'
-import { validateField } from '@/shared'
+import { Data, validateField } from '@/shared'
+import PositionController from '../Base/PositionController'
+import { PositionType } from '../Base/GuideDrag.vue'
 
 type FormDataItem = Omit<ComEditorPropsValueType, 'type'> & {
   key: string
@@ -53,6 +55,10 @@ export default defineComponent({
           ) // 颜色 暂时写成input
         case ComEditorWidgetType.INPUTNUMBER:
           return <NInputNumber v-model={[data.defaultValue, 'value']} />
+        case ComEditorWidgetType.CONTROLLINPUT:
+          return (
+            <PositionController v-model={[data.defaultValue, 'positionData']} />
+          )
         case ComEditorWidgetType.SELECT:
           return (
             <NSelect
