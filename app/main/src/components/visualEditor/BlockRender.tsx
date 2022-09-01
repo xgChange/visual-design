@@ -73,6 +73,7 @@ const BlockRender = defineComponent({
               [`${style.comRenderBoxSelected}`]: props.selected
             }
           ]}
+          style={{ cursor: lockMaskLayer.value ? 'move' : 'default' }}
         >
           {lockMaskLayer.value ? (
             <MaskLayer cursor="move">{slots.default?.()}</MaskLayer>

@@ -44,7 +44,8 @@ export const coverComStyleByEdit: (keyof CSSProperties)[] = [
   'top',
   'bottom',
   'left',
-  'right'
+  'right',
+  'cursor'
 ]
 
 // 这个是 Com 外面那个盒子

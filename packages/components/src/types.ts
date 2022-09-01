@@ -1,5 +1,3 @@
-import { StyleValue } from 'vue'
-
 export interface SlotEventType {
   type: string
   alias: string

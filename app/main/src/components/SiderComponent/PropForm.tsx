@@ -14,9 +14,8 @@ import {
   NSelect,
   NSwitch
 } from 'naive-ui'
-import { Data, validateField } from '@/shared'
+import { validateField } from '@/shared'
 import PositionController from '../Base/PositionController'
-import { PositionType } from '../Base/GuideDrag.vue'
 
 type FormDataItem = Omit<ComEditorPropsValueType, 'type'> & {
   key: string

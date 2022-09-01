@@ -30,7 +30,7 @@ const logoWrapperClass = ['logo-wrapper', { 'no-slogan': !props.slogan }]
     justify-content: center;
   }
   .logo {
-    background-image: url(@/assets/logo.png);
+    background-image: url(@/assets/visual-logo.jpg);
     background-repeat: no-repeat;
     background-size: 100%;
     width: 100px;

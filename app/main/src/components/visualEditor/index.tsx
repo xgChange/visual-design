@@ -7,7 +7,8 @@ import {
   watch,
   Teleport,
   watchEffect,
-  StyleValue
+  StyleValue,
+  ComponentPublicInstance
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
@@ -29,13 +30,13 @@ import { useGuideDrag } from './hooks/useGuideDrag'
 import { NDropdown } from 'naive-ui'
 import { useContextMenu } from './hooks/useContextMenu'
 import {
-  coverComStyleByEdit,
   formatComStyle,
   getComStyle,
   getOuterBoxStyle,
   handleStyleObject,
   preComStyle
 } from './style'
+import { useDragSetEleSize } from './hooks/useDragSetEleSize'
 
 type BlockRenderType = InstanceType<typeof BlockRender> | null
 
@@ -45,6 +46,8 @@ const contextOptions = [
     key: 'delete'
   }
 ]
+
+type ComPublicInstanceType = ComponentPublicInstance | null
 
 export default defineComponent({
   name: 'VisualEditor',
@@ -56,9 +59,21 @@ export default defineComponent({
 
     const drag = ref(false)
 
+    const comRefMap = ref<Map<string, ComPublicInstanceType>>(new Map())
+
     const innerCurPageComponets = shallowRef<BlockType[]>([])
 
     const selectedComKey = computed(() => selectedComInfo.value?.key as string)
+
+    // 当前选择的 ComRef
+    const selectedRef = computed(() =>
+      comRefMap.value.get(selectedComKey.value)
+    )
+
+    // 当前选择的 ComRefProxy
+    const selectedComProxyRef = computed(
+      () => comRefMap.value.get(selectedComKey.value)?.$el?.parentNode
+    )
 
     const curPageBlock = computed(
       () =>
@@ -72,7 +87,6 @@ export default defineComponent({
      */
     function formatComProps(props: Data<any>, option?: 'style') {
       return Object.keys(props).reduce((obj, prop) => {
-        // 这里做了一个 响应式依赖，selectedComInfo，在render时候会响应 selectedComInfo收集的依赖，从而从新执行这个computed
         const defaultValue = props[prop].defaultValue
         const type = props[prop].type
         const fieldResult = validateField(type(defaultValue), type)
@@ -92,10 +106,11 @@ export default defineComponent({
       // 序列化 com props、styles
       const result = pageComs.reduce(
         (cur, next) => {
+          // 这里做了一个 响应式依赖，selectedComInfo，因为 selectedComInfo是ref，把里面的普通对象转成了 reactive
+          // 所以 里面属性的改变会重新 update
           const curRealEditorProps =
             (selectedComKey.value === next?.key ? selectedComInfo.value : next)
               ?.editorProps || {}
-
           const curRealEditorStyles =
             (selectedComKey.value === next?.key ? selectedComInfo.value : next)
               ?.editorStyles || {}
@@ -114,7 +129,6 @@ export default defineComponent({
           styles: {}
         } as Record<'props' | 'styles', Data<any>>
       )
-      // handleStyleObject(result.styles)
       return result
     })
 
@@ -153,6 +167,21 @@ export default defineComponent({
       selectedComKey,
       curPageBlock
     )
+
+    const { dragStyle, moveAfterWidth, isSetSizeDrag } = useDragSetEleSize(
+      selectedRef,
+      selectedComProxyRef
+    )
+
+    const selectedComDragEleInfo = computed(() => {
+      return {
+        [selectedComKey.value]: {
+          moveAfterWidth: moveAfterWidth.value,
+          isSetSizeDrag: isSetSizeDrag.value,
+          dragStyle
+        }
+      }
+    })
 
     // 拖拽后的数据 同步到 pinia
     watch(innerCurPageComponets, v => {
@@ -215,7 +244,6 @@ export default defineComponent({
 
     function selectedCurComponent(info: OmitComponentType) {
       if (info.key !== selectedComKey.value) {
-        console.log('set-selected-com')
         store.setSelectedComInfo(info)
       }
     }
@@ -228,7 +256,11 @@ export default defineComponent({
 
     // 有一个 递归 render 组件问题，在vite热更新的时候
     return () => {
-      console.log(curComProps.value)
+      console.log(
+        curComProps.value.styles,
+        selectedRef.value,
+        selectedComProxyRef.value
+      )
       return (
         <div style={mainPageStyle.value} class={styles.visualEditor}>
           {showGuidTips.value && (
@@ -324,15 +356,35 @@ export default defineComponent({
                                   }
                                 ]}
                                 style={getOuterBoxStyle(
-                                  curComProps.value.styles[Com.key as string]
+                                  Object.assign(
+                                    curComProps.value.styles[Com.key as string],
+                                    selectedComDragEleInfo.value[
+                                      Com.key as string
+                                    ]?.dragStyle || {}
+                                  )
                                 )}
                               >
                                 <Com
+                                  ref={r => {
+                                    comRefMap.value.set(
+                                      Com.key as string,
+                                      r as ComPublicInstanceType
+                                    )
+                                  }}
                                   {...(curComProps.value.props[
                                     Com.key as string
                                   ] || {})}
-                                  style={getComStyle(
-                                    curComProps.value.styles[Com.key as string]
+                                  style={Object.assign(
+                                    getComStyle(
+                                      Object.assign(
+                                        curComProps.value.styles[
+                                          Com.key as string
+                                        ],
+                                        selectedComDragEleInfo.value[
+                                          Com.key as string
+                                        ]?.dragStyle || {}
+                                      )
+                                    )
                                   )}
                                 />
                               </div>
