@@ -32,14 +32,14 @@ const editorProps: Partial<ComEditorPropType<VButtonPropsType>> = {
     props.label.default,
     ComEditorWidgetType.INPUT
   ),
-  size: createEditorPropsFactory(allProps.size, '按钮大小')(
-    allProps.size.default,
-    ComEditorWidgetType.SELECT,
-    createSelectionFactory(
-      ['large', 'mini', 'normal', 'small'] as ButtonSize[],
-      item => ({ label: item, value: item })
-    )
-  ),
+  // size: createEditorPropsFactory(allProps.size, '按钮大小')(
+  //   allProps.size.default,
+  //   ComEditorWidgetType.SELECT,
+  //   createSelectionFactory(
+  //     ['large', 'mini', 'normal', 'small'] as ButtonSize[],
+  //     item => ({ label: item, value: item })
+  //   )
+  // ),
   type: createEditorPropsFactory(allProps.type, '按钮类型')(
     allProps.type.default,
     ComEditorWidgetType.SELECT,

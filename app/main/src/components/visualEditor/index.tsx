@@ -8,7 +8,11 @@ import {
   Teleport,
   watchEffect,
   StyleValue,
-  ComponentPublicInstance
+  ComponentPublicInstance,
+  reactive,
+  Ref,
+  proxyRefs,
+  ShallowUnwrapRef
 } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useVisualStore } from '@/store'
@@ -48,6 +52,14 @@ const contextOptions = [
 ]
 
 type ComPublicInstanceType = ComponentPublicInstance | null
+
+type DragAfterEleInfoType = {
+  moveAfterWidth: number
+  isSetSizeDrag: boolean
+  dragStyle: Data<string | number>
+  key: string
+  moveOffset: Ref<{ x: number }>
+}
 
 export default defineComponent({
   name: 'VisualEditor',
@@ -126,7 +138,7 @@ export default defineComponent({
         },
         {
           props: {},
-          styles: {}
+          styles: reactive({})
         } as Record<'props' | 'styles', Data<any>>
       )
       return result
@@ -168,18 +180,58 @@ export default defineComponent({
       curPageBlock
     )
 
-    const { dragStyle, moveAfterWidth, isSetSizeDrag } = useDragSetEleSize(
-      selectedRef,
-      selectedComProxyRef
-    )
+    const { dragStyle, moveAfterWidth, isSetSizeDrag, moveOffset } =
+      useDragSetEleSize(selectedRef, selectedComProxyRef)
 
+    // 选择的 Com，改变size后 拖拽元素的信息
     const selectedComDragEleInfo = computed(() => {
-      return {
-        [selectedComKey.value]: {
-          moveAfterWidth: moveAfterWidth.value,
-          isSetSizeDrag: isSetSizeDrag.value,
-          dragStyle
+      return proxyRefs({
+        key: selectedComKey,
+        moveAfterWidth,
+        isSetSizeDrag,
+        dragStyle,
+        moveOffset
+      })
+    })
+
+    // 处理 拖拽改变大小后的style，同步到 pinia
+    function updateAfterDragStyle(
+      eleInfo: ShallowUnwrapRef<DragAfterEleInfoType>
+    ) {
+      const selectedComInfoStyles = selectedComInfo.value?.editorStyles || {}
+      const curComStyle = curComProps.value.styles[selectedComKey.value]
+      const moveOffset = eleInfo.moveOffset
+      const isSetSizeDrag = eleInfo.isSetSizeDrag
+      for (const key in eleInfo.dragStyle) {
+        const item = eleInfo.dragStyle[key]
+        const selectedComInfoByEditor = selectedComInfoStyles[key]
+        if (selectedComInfoByEditor) {
+          // 这里取 defaultValue 和 拖拽改变的最值，根据 moveOffset，如果等于0，则不设置，例如：切换 ele 时
+          const patchValue = [item, selectedComInfoByEditor.defaultValue]
+          if (isSetSizeDrag) {
+            if (moveOffset.x > 0) {
+              selectedComInfoByEditor.defaultValue = Math.max.apply(
+                null,
+                patchValue
+              )
+            } else if (moveOffset.x < 0) {
+              selectedComInfoByEditor.defaultValue = Math.min.apply(
+                null,
+                patchValue
+              )
+            }
+          }
+        } else {
+          if (curComStyle) {
+            curComStyle[key] = item
+          }
         }
+      }
+    }
+
+    watchEffect(() => {
+      if (selectedComKey.value === selectedComDragEleInfo.value.key) {
+        updateAfterDragStyle(selectedComDragEleInfo.value)
       }
     })
 
@@ -256,11 +308,6 @@ export default defineComponent({
 
     // 有一个 递归 render 组件问题，在vite热更新的时候
     return () => {
-      console.log(
-        curComProps.value.styles,
-        selectedRef.value,
-        selectedComProxyRef.value
-      )
       return (
         <div style={mainPageStyle.value} class={styles.visualEditor}>
           {showGuidTips.value && (
@@ -357,10 +404,7 @@ export default defineComponent({
                                 ]}
                                 style={getOuterBoxStyle(
                                   Object.assign(
-                                    curComProps.value.styles[Com.key as string],
-                                    selectedComDragEleInfo.value[
-                                      Com.key as string
-                                    ]?.dragStyle || {}
+                                    curComProps.value.styles[Com.key as string]
                                   )
                                 )}
                               >
@@ -379,10 +423,7 @@ export default defineComponent({
                                       Object.assign(
                                         curComProps.value.styles[
                                           Com.key as string
-                                        ],
-                                        selectedComDragEleInfo.value[
-                                          Com.key as string
-                                        ]?.dragStyle || {}
+                                        ]
                                       )
                                     )
                                   )}

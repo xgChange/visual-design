@@ -63,6 +63,7 @@ export default defineComponent({
             <NSelect
               options={item.options}
               v-model={[data.defaultValue, 'value']}
+              virtualScroll={false}
             />
           )
         case ComEditorWidgetType.SWITCH:

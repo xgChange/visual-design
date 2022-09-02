@@ -18,13 +18,11 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
 
   let mouseMove: ArgsNOOP = NOOP
 
-  const dragStyle = reactive<Data<string>>({})
+  const dragStyle = ref(reactive<Data<number | string>>({}))
 
   const sideOffset = 2
 
-  const moveOffset = ref({
-    x: 0
-  })
+  const moveOffset = ref({ x: 0 })
 
   // 移动后的 宽度，更新的 target
   const moveAfterWidth = computed(() => {
@@ -57,6 +55,8 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
 
   watchEffect(() => {
     const ele = proxyRef ? proxyRef.value : comRef.value?.$el
+    dragStyle.value = {}
+    moveOffset.value = { x: 0 }
     console.log('watch', ele)
     if (ele) {
       const getDragSide = function () {
@@ -99,9 +99,9 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
         const topSide = getDragSide().topSide
         const rightSide = getDragSide().rightSide
         if (isSideContainPoint([x, y], [topSide, rightSide])) {
-          dragStyle.cursor = 'e-resize'
+          dragStyle.value.cursor = 'e-resize'
         } else {
-          dragStyle.cursor = 'move'
+          dragStyle.value.cursor = 'move'
         }
       }
 
@@ -122,7 +122,7 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
             moveOffset.value.x = e.x - curWidth
           }
 
-          dragStyle.width = moveAfterWidth.value + 'px'
+          dragStyle.value.width = moveAfterWidth.value
         }
       }
       // 当前元素上 鼠标按下的事件
@@ -152,6 +152,7 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
   return {
     dragStyle,
     moveAfterWidth,
-    isSetSizeDrag
+    isSetSizeDrag,
+    moveOffset
   }
 }
