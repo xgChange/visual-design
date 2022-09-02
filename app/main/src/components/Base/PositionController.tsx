@@ -1,5 +1,5 @@
 import { NInputNumber } from 'naive-ui'
-import { defineComponent, PropType, watch, ref, computed } from 'vue'
+import { defineComponent, PropType, computed } from 'vue'
 
 import styles from './style/PositionController.module.scss'
 

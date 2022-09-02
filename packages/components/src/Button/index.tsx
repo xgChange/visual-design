@@ -10,7 +10,6 @@ import {
 import Button, { ButtonProps, ButtonType } from 'vant/es/button/index'
 import 'vant/es/button/style/index'
 import { createEditorPropsFactory, createSelectionFactory } from '../utils'
-import { ButtonSize } from 'vant'
 
 const props = {
   label: {
