@@ -143,7 +143,7 @@ export default defineComponent({
           </VueDraggable>
         </NCollapseItem>
         {/* 页面设置 */}
-        <NCollapseItem
+        {/* <NCollapseItem
           class={styles.item}
           v-slots={{
             header: InsertHeader(panelGroupName[PANEL_GROUP_TYPE.PAGESETTING])
@@ -151,7 +151,7 @@ export default defineComponent({
           name={PANEL_GROUP_TYPE.PAGESETTING}
         >
           页面设置
-        </NCollapseItem>
+        </NCollapseItem> */}
       </NCollapse>
     )
   }
