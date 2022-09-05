@@ -7,6 +7,11 @@
     "build": "pnpm run tsc && vite build",
     "tsc": "tsc"
   },
+  "files": [
+    "lib",
+    "package.json",
+    "volar.ts"
+  ],
   "keywords": [],
   "author": "",
   "license": "ISC",

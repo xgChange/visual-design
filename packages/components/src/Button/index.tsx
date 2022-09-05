@@ -64,10 +64,11 @@ const editorStyles: Partial<ComEditorPropType<StyleValue | StyleValueGroup>> = {
     '高度',
     'px'
   )(44, ComEditorWidgetType.INPUTNUMBER),
-  positionGroup: createEditorPropsFactory({ type: Object }, '位置', 'px')(
-    undefined,
-    ComEditorWidgetType.CONTROLLINPUT
-  )
+  positionGroup: createEditorPropsFactory(
+    { type: Object },
+    '位置',
+    'px'
+  )(undefined, ComEditorWidgetType.CONTROLLINPUT)
 }
 
 const VButton = defineComponent<Partial<VButtonPropsType>>({
@@ -114,5 +115,7 @@ const VButton = defineComponent<Partial<VButtonPropsType>>({
 })
 
 type VButtonType = typeof VButton & ExtendedProperty
+
+export { VButton }
 
 export default VButton as VButtonType

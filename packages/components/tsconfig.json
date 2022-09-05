@@ -9,10 +9,13 @@
     "outDir": "lib",
     "emitDeclarationOnly": false,
     // "noEmit": true,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "paths": {
+      "asam-visual-components": ["./src"]
+    }
   },
   "extends": "../../tsconfig.common.json",
   "exclude": ["./node_modules/"],
   "types": ["vite/client"],
-  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"]
+  "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx", "volar.ts"]
 }

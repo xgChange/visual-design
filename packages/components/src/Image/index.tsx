@@ -54,4 +54,8 @@ const VImage = defineComponent<Partial<VImagePropsType>>({
 
 type VImageType = typeof VImage & ExtendedProperty
 
+export {
+  VImage
+}
+
 export default VImage as VImageType
