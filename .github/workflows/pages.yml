@@ -35,6 +35,7 @@ jobs:
         run: pnpm run build
   # 部署 github pages
   deploy:
+    runs-on: ubuntu-latest
     needs: build
     steps:
       - uses: pnpm/action-setup@v2.2.2
