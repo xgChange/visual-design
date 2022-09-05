@@ -1,7 +1,6 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "lib",
     "sourceMap": true,
     "strict": true,
     "rootDir": ".",
@@ -12,7 +11,7 @@
     }
   },
   "extends": "./tsconfig.common.json",
-  "exclude": ["node_modules"],
+  "exclude": ["./node_modules"],
   "include": [
     "example/src/**/.ts",
     "example/src/**/.tsx",

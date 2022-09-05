@@ -12,6 +12,6 @@
     "isolatedModules": true,
     "esModuleInterop": true,
     "noUnusedLocals": true,
-    "lib": ["esnext", "dom"]
+    "lib": ["esnext", "dom"],
   }
 }

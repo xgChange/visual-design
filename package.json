@@ -7,7 +7,7 @@
   "scripts": {
     "dev": "pnpm -C app/main dev",
     "example": "pnpm -C example dev",
-    "build": "pnpm -C app/main build",
+    "build": "pnpm run build:c",
     "build:c": "pnpm -C packages/components build",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
@@ -44,5 +44,8 @@
     "*.{html,css,less,scss,md}": [
       "prettier --write"
     ]
+  },
+  "dependencies": {
+    "vue": "^3.2.25"
   }
 }

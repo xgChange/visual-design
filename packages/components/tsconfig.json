@@ -1,16 +1,18 @@
 {
   "compilerOptions": {
     "baseUrl": ".",
-    "sourceMap": true,
+    "sourceMap": false,
     "strict": true,
-    "rootDir": ".",
+    "rootDir": "../components",
     "composite": true,
     "declaration": true,
-    "declarationDir": "./types",
-    "emitDeclarationOnly": true
+    "outDir": "lib",
+    "emitDeclarationOnly": false,
+    // "noEmit": true,
+    "skipLibCheck": true
   },
   "extends": "../../tsconfig.common.json",
-  "exclude": ["node_modules"],
+  "exclude": ["./node_modules/"],
   "types": ["vite/client"],
   "include": ["src/**/*.ts", "src/**/*.d.ts", "src/**/*.tsx"]
 }
