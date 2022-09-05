@@ -1,7 +1,0 @@
-node_modules
-
-packages/*/tsconfig.tsbuildinfo
-
-packages/**/dist
-
-packages/**/lib
