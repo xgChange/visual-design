@@ -16,7 +16,7 @@
     "types": ["vite/client", "naive-ui/volar", "unplugin-vue-define-options"],
     "paths": {
       "@/*": ["src/*"],
-      "@visual/*": ["../../packages/*/src"]
+      "asam-visual-*": ["../../packages/*/src"]
     }
   },
   "include": [

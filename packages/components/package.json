@@ -1,5 +1,5 @@
 {
-  "name": "@visual/components",
+  "name": "asam-visual-components",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -10,8 +10,12 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "dependencies": {
+  "devDependencies": {
     "vant": "^3.5.2",
     "vue": "^3.2.25"
+  },
+  "peerDependencies": {
+    "vue": "^3.2.25",
+    "vant": "^3.5.2"
   }
 }

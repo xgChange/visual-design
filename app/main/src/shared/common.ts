@@ -1,4 +1,4 @@
-import { NativeConstructorType } from '@visual/components'
+import { NativeConstructorType } from 'asam-visual-components'
 import { customAlphabet } from 'nanoid'
 
 export const createArray = <T>(arr?: T[]) => (arr?.length ? arr : ([] as T[]))

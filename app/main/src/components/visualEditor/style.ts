@@ -4,7 +4,7 @@
 
 import { Data, PropValueType } from '@/shared'
 import { CSSProperties, StyleValue } from 'vue'
-import { styleValueGroup } from '@visual/components'
+import { styleValueGroup } from 'asam-visual-components'
 
 export function formatComStyle(prop: any, key: string, value: PropValueType) {
   // 判断是否有 单位，例如 px、vw 等

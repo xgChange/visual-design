@@ -6,12 +6,12 @@
 
 ### monorepo 管理形式
 
-- @visual/components 组件、模板
-- @visual/visualPreview 预览、编辑、拖拽区域 (支持 pc、mobile)，目前 mobile
-- @visual/shared 公共方法
-- @visual/main 主页面(左边导航栏、中间布局、右边编辑栏)
-- @visual/docs 用 vitepress 编写文档
-- @visual/api 后面尝试加入 api
+- asam-visual-components 组件、模板
+- asam-visual-visualPreview 预览、编辑、拖拽区域 (支持 pc、mobile)，目前 mobile
+- asam-visual-shared 公共方法
+- asam-visual-main 主页面(左边导航栏、中间布局、右边编辑栏)
+- asam-visual-docs 用 vitepress 编写文档
+- asam-visual-api 后面尝试加入 api
 
 ### 项目工具
 
@@ -114,7 +114,7 @@ tsconfig 里面说明
   ```json
   // 当前目录下的tsconfig.json，暂未找到更好的办法，其实应该这个paths在根目录下定义的
   {
-    "paths": { "@visual/*": "../../packages/*/src" }
+    "paths": { "asam-visual*": "../../packages/*/src" }
   }
   ```
 

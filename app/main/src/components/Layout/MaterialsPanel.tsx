@@ -6,7 +6,7 @@ import {
   shallowRef,
   TransitionGroup
 } from 'vue'
-import { VComponentAll, VComponentType } from '@visual/components'
+import { VComponentAll, VComponentType } from 'asam-visual-components'
 import VueDraggable from 'vuedraggable'
 import { cloneDeep } from 'lodash'
 

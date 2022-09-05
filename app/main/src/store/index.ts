@@ -8,7 +8,7 @@ import { useState } from '@/hooks/useState'
 import {
   createEditorPropsFactory,
   ComEditorWidgetType
-} from '@visual/components'
+} from 'asam-visual-components'
 
 type DragType = 'default' | 'nested'
 

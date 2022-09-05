@@ -3,7 +3,7 @@ import {
   ComEditorPropsValueType,
   ComEditorPropType,
   ComEditorWidgetType
-} from '@visual/components'
+} from 'asam-visual-components'
 import {
   FormItemRule,
   FormRules,

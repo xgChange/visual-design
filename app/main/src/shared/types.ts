@@ -1,6 +1,6 @@
 export type ObjectKeyType<T> = keyof T
 
-import { VComponentType } from '@visual/components'
+import { VComponentType } from 'asam-visual-components'
 import { ShallowRef } from 'vue'
 
 interface PageConfig {

@@ -1,5 +1,5 @@
 {
-  "name": "@visual/main",
+  "name": "asam-visual-main",
   "private": true,
   "version": "0.0.0",
   "scripts": {
@@ -10,8 +10,7 @@
   },
   "dependencies": {
     "@vicons/fluent": "^0.12.0",
-    "@visual/components": "workspace:*",
-    "@visual/shared": "workspace:*",
+    "asam-visual-components": "workspace:*",
     "lodash": "^4.17.21",
     "naive-ui": "^2.33.2",
     "nanoid": "^4.0.0",

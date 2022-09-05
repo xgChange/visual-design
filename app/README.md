@@ -1,5 +1,5 @@
 # 放前端项目和后端项目的包
 
-## @visual/main
+## asam-visual-main
 
-## @visual/api
+## asam-visual-api

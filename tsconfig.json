@@ -8,7 +8,7 @@
     "composite": true,
     "types": ["vite/client"],
     "paths": {
-      "@visual/*": ["packages/*/src"]
+      "asam-visual/*": ["packages/*/src"]
     }
   },
   "extends": "./tsconfig.common.json",
