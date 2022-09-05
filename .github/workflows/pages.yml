@@ -36,6 +36,7 @@ jobs:
   # 部署 github pages
   deploy:
     needs: build
+    steps:
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7
