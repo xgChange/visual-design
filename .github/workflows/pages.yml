@@ -46,8 +46,10 @@ jobs:
       #   with:
       #     name: build-pages
       #     path: app/main/dist
+      - name: Output
+        run: echo `ls ./`
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4.2.3
         with:
           branch: gh-pages # 部署的分支名 有一定要独立一个分支，第一次设置为master 好家伙构建完成后，直接把我的项目文件清除了，只剩下打包的文件了。
-          folder: app/main/dist   # build后文件目录
+          folder: ./app/main/dist   # build后文件目录
