@@ -32,5 +32,18 @@ export default defineConfig({
         replacement: pathResolve('src')
       }
     ]
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          lodash: ['lodash'],
+          'naive-ui': ['naive-ui'],
+          vue: ['vue'],
+          pinia: ['pinia'],
+          vuedraggable: ['vuedraggable']
+        }
+      }
+    }
   }
 })

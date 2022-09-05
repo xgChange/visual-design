@@ -11,8 +11,5 @@ declare module '@vue/runtime-core' {
     LogoWrapper: typeof import('./src/components/Base/LogoWrapper.vue')['default']
     MaskLayer: typeof import('./src/components/Base/MaskLayer.vue')['default']
     NIcon: typeof import('naive-ui')['NIcon']
-    NSelect: typeof import('naive-ui')['NSelect']
-    RouterLink: typeof import('vue-router')['RouterLink']
-    RouterView: typeof import('vue-router')['RouterView']
   }
 }

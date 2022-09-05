@@ -114,7 +114,10 @@ export default defineComponent({
 
     // 这里收集了当前页面上的组件props
     const curComProps = computed(() => {
-      const pageComs = curPageBlocks.value?.map(item => item.coms).flat() || []
+      const pageComs =
+        curPageBlocks.value
+          ?.map(item => item.coms as OmitComponentType[] | undefined)
+          ?.flat() || []
       // 序列化 com props、styles
       const result = pageComs.reduce(
         (cur, next) => {
