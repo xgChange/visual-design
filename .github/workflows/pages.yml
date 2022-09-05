@@ -1,0 +1,31 @@
+name: CI
+
+on:
+  push:
+    branches: feature/*
+
+jobs:
+  CI:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.x"
+      # 检查缓存
+      - name: Cache
+        id: cache-dependencies
+        uses: actions/cache@v3
+        with:
+          path: | 
+            **/node_modules
+          key: ${{runner.OS}}-${{hashFiles('**/package-lock')}}
+      # 安装依赖
+      - name: Install Dependence
+        if: steps.cache-dependencies.outputs.cache-hit != 'true'
+        run: pnpm install
+      # 执行任务
+      - name: execute jobs
+        run: pnpm run build

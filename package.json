@@ -7,8 +7,9 @@
   "scripts": {
     "dev": "pnpm -C app/main dev",
     "example": "pnpm -C example dev",
-    "build": "pnpm run build:c",
+    "build": "pnpm run build:c && pnpm run build:app",
     "build:c": "pnpm -C packages/components build",
+    "build:app": "pnpm -C app/main build",
     "prepare": "husky install",
     "preinstall": "npx only-allow pnpm",
     "ca": "changeset add",
