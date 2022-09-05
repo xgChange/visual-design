@@ -5,15 +5,19 @@ on:
     branches: feature/*
 
 jobs:
-  CI:
+  pages:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
+      - uses: pnpm/action-setup@v2.2.2
+        with:
+          version: 7
       - name: use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: "16.x"
+          cache: 'pnpm'
       # 检查缓存
       - name: Cache
         id: cache-dependencies
