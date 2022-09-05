@@ -44,25 +44,50 @@ pnpm add unplugin-vue-define-options -D
 
 ```typescript
 interface PageConfig {
-  style: {}
+  style: Record<string, any>
 }
 
 interface Component {
   name: string
   id: string
-  style: Object
+  style: Record<string, string>
   slot: Component
 }
 
-interface CurPageInfo {
-  components: Component[]
+export type OmitComponentType = VComponentType & Component
+export type BlockType = {
+  key?: string
+  coms?: ShallowRef<OmitComponentType[]>
+}
+export interface CurPageInfo {
+  blocks: BlockType[]
   path: string
   title: string
 }
 
-interface PageInfo {
+export type VisualEditorType = {
   pageConfig: PageConfig
-  page: Record<string, CurPageInfo>
+  page: Record<string, Partial<CurPageInfo>>
+}
+
+
+// 例如
+{
+  pageConfig: {
+    style: {
+      backgroundColor: createEditorPropsFactory({}, '背景颜色')(
+        '#fff',
+        ComEditorWidgetType.COLOR
+      )
+    }
+  },
+  page: {
+    '/': {
+      blocks: [] as BlockType[],
+      path: '/',
+      title: '首页'
+    }
+  }
 }
 ```
 
@@ -260,4 +285,4 @@ const MyCom = {
 
 - 保存
 
-- 修改json
+- 修改 json
