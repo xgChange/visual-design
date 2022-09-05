@@ -41,11 +41,11 @@ jobs:
       - uses: pnpm/action-setup@v2.2.2
         with:
           version: 7
-      - name: download build files
-        uses: actions/download-artifact@v2
-        with:
-          name: build-pages
-          path: app/main/dist
+      # - name: download build files
+      #   uses: actions/download-artifact@v2
+      #   with:
+      #     name: build-pages
+      #     path: app/main/dist
       - name: deploy
         uses: JamesIves/github-pages-deploy-action@v4.2.3
         with:
