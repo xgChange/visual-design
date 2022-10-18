@@ -1,4 +1,4 @@
-import { ref, Ref, nextTick, ShallowRef, shallowRef } from 'vue'
+import { ref, Ref, nextTick, ShallowRef, shallowRef, unref } from 'vue'
 import { MaybeArray } from 'naive-ui/es/_utils'
 import { BlockType } from '@/shared'
 
@@ -41,7 +41,7 @@ export function useContextMenu(
       if (editorDisableDrag.value) {
         if (curPageBlock.value && curPageBlock.value.coms) {
           curPageBlock.value.coms = shallowRef(
-            curPageBlock.value?.coms?.value?.filter(
+            unref(curPageBlock.value?.coms)?.filter(
               item => item.key !== selectedComKey.value
             ) || []
           )

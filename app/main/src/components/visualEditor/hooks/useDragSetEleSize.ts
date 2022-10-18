@@ -53,7 +53,9 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
     return false
   }
 
-  watchEffect(() => {
+  let cleanupFn = NOOP
+
+  const watchStop = watchEffect(() => {
     const ele = proxyRef ? proxyRef.value : comRef.value?.$el
     dragStyle.value = {}
     moveOffset.value = { x: 0 }
@@ -136,17 +138,21 @@ export function useDragSetEleSize(comRef: Ref<any>, proxyRef?: Ref<any>) {
 
       // document上 监听鼠标移动的事件
       document.addEventListener('mousemove', mouseMove)
+
+      cleanupFn = () => {
+        ele.removeEventListener('mousedown', elMousedown)
+        ele.removeEventListener('mousemove', elMouseMove)
+        document.removeEventListener('mouseup', mouseUp)
+        document.removeEventListener('mousemove', mouseMove)
+      }
     }
   })
 
   // 这个会在 scopeEffect stop 时调用
   onScopeDispose(() => {
     console.log('dispose', comRef.value)
-    const ele = comRef.value?.$el
-    ele.removeEventListener('mousedown', elMousedown)
-    ele.removeEventListener('mousemove', elMouseMove)
-    document.removeEventListener('mouseup', mouseUp)
-    document.removeEventListener('mouseMove', mouseMove)
+    watchStop()
+    cleanupFn()
   })
 
   return {
